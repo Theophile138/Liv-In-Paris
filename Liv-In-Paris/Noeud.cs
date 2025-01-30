@@ -8,5 +8,10 @@ namespace Liv_In_Paris
 {
     internal class Noeud
     {
+
+        private int numero;
+
+        public int Numero { get { return numero; } }
+
     }
 }
