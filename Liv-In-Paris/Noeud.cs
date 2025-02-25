@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 
 namespace Liv_In_Paris
 {
-    internal class Noeud
+    public class Noeud
     {
 
         private int numero;
 
         public int Numero { get { return numero; } }
+        
+
+        public Noeud(int num) 
+        { 
+            numero = num;
+        }
 
     }
 }

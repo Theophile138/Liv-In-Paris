@@ -5,6 +5,10 @@
         static void Main(string[] args)
         {
             Console.WriteLine("Salut !");
+
+            Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
+
+            Console.WriteLine("Fini");
         }
     }
 }
