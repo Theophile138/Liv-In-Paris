@@ -55,16 +55,14 @@ namespace Liv_In_Paris
             }
         }
 
-        Noeud[] ListNoeud;
-        Lien[] ListLien;
+        public Noeud[] ListNoeud;
+        public Lien[] ListLien;
 
         public Graphe(Noeud[] ListNoeud , Lien[] ListLien) 
         { 
             this.ListNoeud = ListNoeud;
             this.ListLien = ListLien;
         }
-
-
 
     }
 }
