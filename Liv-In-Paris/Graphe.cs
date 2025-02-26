@@ -10,7 +10,7 @@ namespace Liv_In_Paris
     public class Graphe
     {
 
-        public int[,] Matriceadj(int[,] t) {
+        public static int[,] Matriceadj(int[,] t) {
 
             int[,] matadj = new int[getnbrnoeud(t) + 1, getnbrnoeud(t) + 1];
 
@@ -22,30 +22,35 @@ namespace Liv_In_Paris
             return matadj;
 
         }
-        public static void Listeadjacence(int[,] t) {
-            for (int m = 0; m < getnbrnoeud(t); m++) {
+        public static void Listeadjacence(int[,] t)
+        {
+            for (int m = 1; m <= getnbrnoeud(t); m++)
+            {
                 Console.Write(m + " --> ");
-                for (int i = 0; i < t.GetLength(1); i++) {
-                    if (t[0, i] == m) { Console.Write(t[1, i] + " "); }
+                for (int i = 0; i < t.GetLength(0); i++)
+                { // Parcours des lignes
+                    if (t[i, 0] == m)
+                    {
+                        Console.Write(t[i, 1] + " ");
+                    }
                 }
-
+                Console.WriteLine();
             }
-        
         }
 
         public static int getnbrnoeud(int[,] t) {
             int compteur = 0;
-            for (int i = 0; i < t.GetLength(1); i++){
-                if (t[1,i] > compteur)
+            for (int i = 0; i < t.GetLength(0); i++){
+                if (t[i,0] > compteur)
                 {
-                    compteur = t[1,i];
+                    compteur = t[i,0];
                 }            
             }
             return compteur;
         }
         public static void affichermatriceadj(int[,] matadj, int[,] t) {
             Console.WriteLine("Matrice d'adjacence :");
-            for (int i = 1; i <= getnbrnoeud(t); i++)
+            for (int i =1; i <= getnbrnoeud(t); i++)
             {
                 for (int j = 1; j <= getnbrnoeud(t); j++)
                 {
