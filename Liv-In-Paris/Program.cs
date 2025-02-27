@@ -15,18 +15,22 @@ namespace Liv_In_Paris
             AllocConsole(); // Ouvre la console
             Console.WriteLine("Console activée !");
 
-            Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
+            //Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
+
+            Graphe myGraphe = Fichier.LoadGraph("grapheSimple.txt");
 
             //Console.WriteLine("Fini");
-            
+
             int[,] tab2D = new int[3, 2]{
                                {3, 3},
                                {1, 1},
                                {2, 2}
                             };
-            int[,] tab = Graphe.Matriceadj();
-            Graphe.affichermatriceadj(tab, tab2D);
-            Graphe.Listeadjacence(tab2D);
+            int[,] tab = Graphe.Matriceadj(tab2D);
+            //Graphe.affichermatriceadj(tab, tab2D);
+            //Graphe.Listeadjacence(tab2D);
+
+            myGraphe.AfficherMatriceAdj();
 
             Application.Run(new InterFaceGraphique(myGraphe) { Width = 1000, Height = 1000 });
             
