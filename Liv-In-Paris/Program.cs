@@ -19,11 +19,10 @@ namespace Liv_In_Paris
 
             Console.WriteLine("Console activée !");
             Noeud NoeudDep = myGraphe.TrouverNoeudParNumero(NoeudDepart);
-            myGraphe.ParcoursLargeur(NoeudDep);
-            
+
 
             //Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
-
+            Console.WriteLine(myGraphe.Connexe());
 
             //Console.WriteLine("Fini");
 
@@ -32,16 +31,6 @@ namespace Liv_In_Paris
                                {1, 1},
                                {2, 2}
                             };
-
-
-            int[,] tab = Graphe.Matriceadj(tab2D);
-      
-            Graphe.Listeadjacence(tab2D);
-           
-            //Graphe.affichermatriceadj(tab, tab2D);
-            //Graphe.Listeadjacence(tab2D);
-
-            //myGraphe.AfficherMatriceAdj(myGraphe);
 
             Application.Run(new InterFaceGraphique(myGraphe) { Width = 1000, Height = 1000 });
             
