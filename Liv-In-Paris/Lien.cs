@@ -29,5 +29,40 @@ namespace Liv_In_Paris
             this.poid = poid;
         }
 
+        public bool Contient(Noeud noeud1_ , Noeud noeud2_)
+        {
+            bool result = false;
+            if ((noeud1_ == noeud1) && (noeud2_ == noeud2)){
+                result = true;
+            }
+
+            if ((noeud1_ == noeud2) && (noeud2_ == noeud1))
+            {
+                result = true;
+            }
+
+            return result;
+        }
+
+        public bool BonneDirection(Noeud noeud1_, Noeud noeud2_)
+        {
+            bool result = false;
+            if ((Contient(noeud1_, noeud2_) == true) && (direction == 0))
+            {
+                result = true;
+            }
+            else
+            {
+                if ((noeud1_ == noeud1) && (noeud2_ == noeud2) && (direction == 1))
+                {
+                    result = true;
+                }
+                if ((noeud1_ == noeud2) && (noeud2_ == noeud1) && (direction == -1))
+                {
+                    result = true;
+                }
+            }
+            return result;
+        }
     }
 }

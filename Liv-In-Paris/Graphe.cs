@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -9,55 +10,85 @@ namespace Liv_In_Paris
 {
     public class Graphe
     {
-
-        public static int[,] Matriceadj(int[,] t) {
-
-            int[,] matadj = new int[getnbrnoeud(t) + 1, getnbrnoeud(t) + 1];
-
-            /// Remplissage de la matrice
-            for (int i = 0; i < t.GetLength(0); i++)
-            {
-                matadj[t[i,0], t[i,1]] = 1;
-            }
-            return matadj;
-
-        }
-        public static void Listeadjacence(int[,] t)
+        public int[,] MatriceAdj()
         {
-            for (int m = 1; m <= getnbrnoeud(t); m++)
+
+            int[,] matAdj = new int[GetNbrNoeud(), GetNbrNoeud()];
+
+            // Remplissage de la matrice
+            for (int i = 0; i < GetNbrNoeud(); i++)
             {
-                Console.Write(m + " --> ");
-                for (int i = 0; i < t.GetLength(0); i++)
-                { // Parcours des lignes
-                    if (t[i, 0] == m)
+               Noeud myNoeud2 = FindNoeud(i+1);
+
+                for(int j = 0; j <  GetNbrNoeud(); j++)
+                {
+                    Noeud myNoeud1 = FindNoeud(j+1);
+
+                    if (LienExiste(myNoeud1,myNoeud2) == true)
                     {
-                        Console.Write(t[i, 1] + " ");
+                        matAdj[i, j] = 1;
                     }
+                    else
+                    {
+                        matAdj[i, j] =  0;
+                    }
+
                 }
-                Console.WriteLine();
             }
+            return matAdj;
+
         }
 
-        public static int getnbrnoeud(int[,] t) {
-            int compteur = 0;
-            for (int i = 0; i < t.GetLength(0); i++){
-                if (t[i,0] > compteur)
-                {
-                    compteur = t[i,0];
-                }            
-            }
-            return compteur;
-        }
-        public static void affichermatriceadj(int[,] matadj, int[,] t) {
+        public void AfficherMatriceAdj()
+        {
+            int[,] matadj = MatriceAdj();
+            
             Console.WriteLine("Matrice d'adjacence :");
-            for (int i =1; i <= getnbrnoeud(t); i++)
+            for (int i = 0; i < GetNbrNoeud(); i++)
             {
-                for (int j = 1; j <= getnbrnoeud(t); j++)
+                for (int j = 0; j < GetNbrNoeud(); j++)
                 {
                     Console.Write(matadj[i, j] + " ");
                 }
                 Console.WriteLine();
             }
+        }
+
+        public Noeud FindNoeud(int num)
+        {
+            Noeud myNoeud = null;
+            for (int i = 0; i < ListNoeud.Length; i++)
+            {
+
+                if (ListNoeud[i].Numero == num)
+                {
+                    myNoeud = ListNoeud[i];
+                }
+
+            }
+            return myNoeud;
+        }
+
+        public bool LienExiste(Noeud noeud1 , Noeud noeud2)
+        {
+            bool result = false;
+            for (int i = 0; i < ListLien.Length; i++)
+            {
+                if (ListLien[i].Contient(noeud1, noeud2) == true)
+                {
+                    if (ListLien[i].BonneDirection(noeud1,noeud2) == true)
+                    {
+                        result = true;
+                    }
+                }
+            }
+            return result;
+        }
+
+
+        public int GetNbrNoeud()
+        {
+            return ListNoeud.Length;
         }
 
         public Noeud[] ListNoeud;
