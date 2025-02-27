@@ -5,11 +5,11 @@
         [STAThread]
         static void Main(string[] args)
         {
-            // Console.WriteLine("Salut !");
+             Console.WriteLine("Salut !");
 
-            // Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
+            Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
 
-            //Console.WriteLine("Fini");
+            Console.WriteLine("Fini");
             int[,] tab2D = new int[3, 2]{
                                {3, 3},
                                {1, 1},
