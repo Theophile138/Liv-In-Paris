@@ -83,6 +83,11 @@ namespace Liv_In_Paris
             }
         }
 
+        private void InitializeComponent()
+        {
+
+        }
+
         private void DrawArrow(Graphics g, Point start, Point end)
         {
             double angle = Math.Atan2(end.Y - start.Y, end.X - start.X);

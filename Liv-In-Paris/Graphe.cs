@@ -60,14 +60,80 @@ namespace Liv_In_Paris
             }
         }
 
-        public Noeud[] ListNoeud;
-        public Lien[] ListLien;
+            public Noeud[] ListNoeud;
+            public Lien[] ListLien;
 
-        public Graphe(Noeud[] ListNoeud , Lien[] ListLien) 
-        { 
-            this.ListNoeud = ListNoeud;
-            this.ListLien = ListLien;
+            public Graphe(Noeud[] ListNoeud , Lien[] ListLien) 
+            { 
+                this.ListNoeud = ListNoeud;
+                this.ListLien = ListLien;
+            }
+        public void ParcoursLargeur(Noeud depart)
+        {
+            Queue<Noeud> file = new Queue<Noeud>();
+            HashSet<Noeud> visite = new HashSet<Noeud>();
+
+            file.Enqueue(depart);
+            visite.Add(depart);
+
+            while (file.Count > 0)
+            {
+                Noeud courant = file.Dequeue();
+                Console.WriteLine($"Visite : {courant.Numero}");
+
+                foreach (Lien lien in ListLien)
+                {
+                    Noeud voisin = null;
+
+                    if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
+                        voisin = lien.Noeud2;
+                    else if (lien.Noeud2 == courant && (lien.Direction == 0 || lien.Direction == 2))
+                        voisin = lien.Noeud1;
+
+                    if (voisin != null && !visite.Contains(voisin))
+                    {
+                        visite.Add(voisin);
+                        file.Enqueue(voisin);
+                    }
+                }
+            }
         }
 
+        public void ParcoursProfondeur(Noeud depart)
+        {
+            HashSet<Noeud> visite = new HashSet<Noeud>();
+            ParcoursProfondeurRecursive(depart, visite);
+        }
+        public Noeud TrouverNoeudParNumero(int numero)
+        {
+            foreach (Noeud noeud in ListNoeud)
+            {
+                if (noeud.Numero == numero)
+                {
+                    return noeud;
+                }
+            }
+            return null; 
+        }
+        private void ParcoursProfondeurRecursive(Noeud courant, HashSet<Noeud> visite)
+        {
+            visite.Add(courant);
+            Console.WriteLine($"Visite : {courant.Numero}");
+
+            foreach (Lien lien in ListLien)
+            {
+                Noeud voisin = null;
+
+                if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
+                    voisin = lien.Noeud2;
+                else if (lien.Noeud2 == courant && (lien.Direction == 0 || lien.Direction == 2))
+                    voisin = lien.Noeud1;
+
+                if (voisin != null && !visite.Contains(voisin))
+                {
+                    ParcoursProfondeurRecursive(voisin, visite);
+                }
+            }
+        }
     }
 }
