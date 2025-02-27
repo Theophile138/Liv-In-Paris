@@ -48,7 +48,7 @@ namespace Liv_In_Paris
             }
             return compteur;
         }
-        public static void affichermatriceadj(int[,] matadj, int[,] t) {
+        public static void AfficherMatriceAdj(int[,] matadj, int[,] t) {
             Console.WriteLine("Matrice d'adjacence :");
             for (int i =1; i <= getnbrnoeud(t); i++)
             {
