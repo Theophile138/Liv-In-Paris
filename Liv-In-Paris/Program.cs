@@ -20,6 +20,7 @@ namespace Liv_In_Paris
             Console.WriteLine("Console activée !");
             Noeud NoeudDep = myGraphe.TrouverNoeudParNumero(NoeudDepart);
             myGraphe.ParcoursLargeur(NoeudDep);
+            
 
             //Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
 
