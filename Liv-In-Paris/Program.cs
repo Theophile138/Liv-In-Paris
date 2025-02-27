@@ -22,7 +22,7 @@ namespace Liv_In_Paris
 
 
             //Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
-            Console.WriteLine(myGraphe.Connexe());
+            Console.WriteLine(myGraphe.TailleDuGraphe()+"  "+myGraphe.OrdreDuGraphe());
 
             //Console.WriteLine("Fini");
 

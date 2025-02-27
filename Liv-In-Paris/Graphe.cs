@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.Devices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
@@ -189,58 +190,80 @@ namespace Liv_In_Paris
         }
 
 
-        public bool ContientCycleAvecPile(Noeud depart)
+        public bool ContientCycle(Noeud depart)
         {
-            // Un ensemble pour garder une trace des nœuds visités
             HashSet<Noeud> visites = new HashSet<Noeud>();
-
-            // Une pile pour effectuer le parcours DFS
             Stack<Noeud> pile = new Stack<Noeud>();
 
-            // Une map pour suivre le parent de chaque nœud dans le parcours
             Dictionary<Noeud, Noeud> parents = new Dictionary<Noeud, Noeud>();
-
-            // On commence le DFS depuis le nœud de départ
             pile.Push(depart);
             visites.Add(depart);
-            parents[depart] = null;  // Le parent du nœud de départ est null
+            parents[depart] = null;  
 
             while (pile.Count > 0)
             {
-                Noeud courant = pile.Pop();  // On prend le nœud du dessus de la pile
-
-                // Exploration des voisins du nœud courant
+                Noeud courant = pile.Pop();  
                 foreach (Lien lien in ListLien)
                 {
                     Noeud voisin = null;
 
-                    // Vérifier si l'arête correspond au nœud courant et au voisin
                     if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
                         voisin = lien.Noeud2;
                     else if (lien.Noeud2 == courant && (lien.Direction == 0 || lien.Direction == 2))
                         voisin = lien.Noeud1;
 
-                    // Si le voisin a déjà été visité et ce n'est pas le parent, alors il y a un cycle
                     if (voisin != null)
                     {
                         if (visites.Contains(voisin) && parents[courant] != voisin)
                         {
-                            return true;  // Cycle détecté
+                            return true; 
                         }
 
-                        // Si le voisin n'a pas encore été visité, l'ajouter à la pile et marquer comme visité
                         if (!visites.Contains(voisin))
                         {
                             pile.Push(voisin);
                             visites.Add(voisin);
-                            parents[voisin] = courant;  // Le parent du voisin est le nœud courant
+                            parents[voisin] = courant;  
                         }
                     }
                 }
             }
+            
 
-            // Aucun cycle détecté
             return false;
+        }
+        public int OrdreDuGraphe()
+        {
+            return ListNoeud.Length;
+        }
+        public int TailleDuGraphe() {
+            return ListLien.Length;
+        }
+        public bool Pondere()
+        {
+            int compteur = 0;
+            for (int i = 0; i < ListLien.Length; i++) {
+                compteur += ListLien[i].Poid;
+            }
+            if (compteur != 0)
+            { 
+                return true; 
+            }
+            else 
+            {
+                return false; 
+            }
+        }
+        public bool Oriente()
+        {
+            bool b = false;
+            for (int i = 0; i < ListLien.Length; i++)
+            {
+                if(ListLien[i].Direction != 0) {
+                    b = true;
+                }
+            }
+            return b;
         }
     }
 }
