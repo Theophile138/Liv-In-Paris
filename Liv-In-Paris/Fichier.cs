@@ -8,14 +8,24 @@ namespace Liv_In_Paris
 {
     public class Fichier
     {
-
+        /// <summary>
+        /// Retourne le chemin du fichier demandé a partir du dossier ou se trouve projet
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="dirName"></param>
+        /// <returns></returns>
         public static string Getpath(string fileName, string dirName)
         {
             string cheminActuel = GetParentLoop(AppDomain.CurrentDomain.BaseDirectory,5);
             string cheminComplet = cheminActuel + "\\Liv-In-Paris" + "\\" + dirName  + "\\" + fileName;
             return cheminComplet;
         }
-
+        /// <summary>
+        /// Trouve le dossier parent en remontant de dossier n fois
+        /// </summary>
+        /// <param name="Path"></param>
+        /// <param name="number"></param>
+        /// <returns></returns>
         public static string GetParentLoop(string Path, int number)
         {
             string result = Path;
@@ -25,7 +35,12 @@ namespace Liv_In_Paris
             }
             return result;
         }
-
+        /// <summary>
+        /// Lire le fichier et retourne un tableau
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="dirName"></param>
+        /// <returns></returns>
         public static string[] ReadFile_TabTxt(string fileName, string dirName = "ressource")
         {
             string Path = null;
@@ -47,6 +62,11 @@ namespace Liv_In_Paris
             return result;
         }
 
+        /// <summary>
+        /// Supprime le ligne contenant % et transforme les espaces en tableau de tableau
+        /// </summary>
+        /// <param name="strTab"></param>
+        /// <returns></returns>
         public static string[][] CleanStringTab(string[] strTab)
         {
             string[][] result = null;
@@ -83,7 +103,12 @@ namespace Liv_In_Paris
 
             return result;
         }
-
+        /// <summary>
+        /// Crée un graphe a partir d'un fichier
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="dirName"></param>
+        /// <returns></returns>
         public static Graphe LoadGraph(string fileName, string dirName = "ressource")
         {
             Graphe result = null;
