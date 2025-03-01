@@ -151,7 +151,7 @@ namespace Liv_In_Paris
             while (pile.Count > 0)
             {
                 Noeud courant = pile.Pop();
-                Console.WriteLine("Sommet : " + courant.ToString());
+                Console.WriteLine("Sommet : " + courant.toString());
 
                 if (!visite.Contains(courant))
                 {
