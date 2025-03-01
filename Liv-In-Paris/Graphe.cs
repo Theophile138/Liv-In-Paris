@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.Devices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
@@ -130,11 +131,7 @@ namespace Liv_In_Paris
             }
         }
 
-        public void ParcoursProfondeur(Noeud depart)
-        {
-            HashSet<Noeud> visite = new HashSet<Noeud>();
-            ParcoursProfondeurRecursive(depart, visite);
-        }
+       
         public Noeud TrouverNoeudParNumero(int numero)
         {
             foreach (Noeud noeud in ListNoeud)
@@ -146,25 +143,127 @@ namespace Liv_In_Paris
             }
             return null; 
         }
-        private void ParcoursProfondeurRecursive(Noeud courant, HashSet<Noeud> visite)
-        {
-            visite.Add(courant);
-            Console.WriteLine($"Visite : {courant.Numero}");
-
-            foreach (Lien lien in ListLien)
+        public bool Connexe() {
+            Stack<Noeud> pile = ParcoursProfondeurAvecPile(ListNoeud[0]);
+            int nbrnoeud = GetNbrNoeud();
+            if (pile.Count == nbrnoeud)
             {
-                Noeud voisin = null;
+                return true;
+            }
+            else { return false; }
+        }
+        public Stack<Noeud> ParcoursProfondeurAvecPile(Noeud depart)
+        {
+            Stack<Noeud> pile = new Stack<Noeud>();
+            HashSet<Noeud> visite = new HashSet<Noeud>();
+            Stack<Noeud> resultat = new Stack<Noeud>();  
 
-                if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
-                    voisin = lien.Noeud2;
-                else if (lien.Noeud2 == courant && (lien.Direction == 0 || lien.Direction == 2))
-                    voisin = lien.Noeud1;
+            pile.Push(depart);
 
-                if (voisin != null && !visite.Contains(voisin))
+            while (pile.Count > 0)
+            {
+                Noeud courant = pile.Pop();
+
+                if (!visite.Contains(courant))
                 {
-                    ParcoursProfondeurRecursive(voisin, visite);
+                    visite.Add(courant);
+                    resultat.Push(courant); 
+
+                    foreach (Lien lien in ListLien)
+                    {
+                        Noeud voisin = null;
+
+                        if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
+                            voisin = lien.Noeud2;
+                        else if (lien.Noeud2 == courant && (lien.Direction == 0 || lien.Direction == 2))
+                            voisin = lien.Noeud1;
+
+                        if (voisin != null && !visite.Contains(voisin))
+                        {
+                            pile.Push(voisin);
+                        }
+                    }
                 }
             }
+
+            return resultat; 
+        }
+
+
+        public bool ContientCycle(Noeud depart)
+        {
+            HashSet<Noeud> visites = new HashSet<Noeud>();
+            Stack<Noeud> pile = new Stack<Noeud>();
+
+            Dictionary<Noeud, Noeud> parents = new Dictionary<Noeud, Noeud>();
+            pile.Push(depart);
+            visites.Add(depart);
+            parents[depart] = null;  
+
+            while (pile.Count > 0)
+            {
+                Noeud courant = pile.Pop();  
+                foreach (Lien lien in ListLien)
+                {
+                    Noeud voisin = null;
+
+                    if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
+                        voisin = lien.Noeud2;
+                    else if (lien.Noeud2 == courant && (lien.Direction == 0 || lien.Direction == 2))
+                        voisin = lien.Noeud1;
+
+                    if (voisin != null)
+                    {
+                        if (visites.Contains(voisin) && parents[courant] != voisin)
+                        {
+                            return true; 
+                        }
+
+                        if (!visites.Contains(voisin))
+                        {
+                            pile.Push(voisin);
+                            visites.Add(voisin);
+                            parents[voisin] = courant;  
+                        }
+                    }
+                }
+            }
+            
+
+            return false;
+        }
+        public int OrdreDuGraphe()
+        {
+            return ListNoeud.Length;
+        }
+        public int TailleDuGraphe() {
+            return ListLien.Length;
+        }
+        public bool Pondere()
+        {
+            int compteur = 0;
+            for (int i = 0; i < ListLien.Length; i++) {
+                compteur += ListLien[i].Poid;
+            }
+            if (compteur != 0)
+            { 
+                return true; 
+            }
+            else 
+            {
+                return false; 
+            }
+        }
+        public bool Oriente()
+        {
+            bool b = false;
+            for (int i = 0; i < ListLien.Length; i++)
+            {
+                if(ListLien[i].Direction != 0) {
+                    b = true;
+                }
+            }
+            return b;
         }
     }
 }

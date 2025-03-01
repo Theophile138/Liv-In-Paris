@@ -16,7 +16,12 @@ namespace Liv_In_Paris
 
 
             //Graphe myGraphe = Fichier.LoadGraph("grapheSimple.txt");
+            Console.WriteLine("Console activée !");
+            Noeud NoeudDep = myGraphe.TrouverNoeudParNumero(NoeudDepart);
+
+
             //Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
+            Console.WriteLine(myGraphe.TailleDuGraphe()+"  "+myGraphe.OrdreDuGraphe());
 
             Graphe myGraphe = Fichier.LoadGraph("felix.txt");
 
