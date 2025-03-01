@@ -163,7 +163,7 @@ namespace Liv_In_Paris
         /// </summary>
         /// <returns></returns>
         public bool Connexe() {
-            Stack<Noeud> pile = ParcoursProfondeur(ListNoeud[0]);
+            Stack<Noeud> pile = ParcoursProfondeurSansWriteLine(ListNoeud[0]);
             int nbrnoeud = GetNbrNoeud();
             if (pile.Count == nbrnoeud)
             {
@@ -211,7 +211,39 @@ namespace Liv_In_Paris
 
             return resultat;
         }
+        public Stack<Noeud> ParcoursProfondeurSansWriteLine(Noeud depart)
+        {
+            Stack<Noeud> pile = new Stack<Noeud>();
+            HashSet<Noeud> visite = new HashSet<Noeud>();
+            Stack<Noeud> resultat = new Stack<Noeud>();
+            pile.Push(depart);
+            visite.Add(depart);
 
+            while (pile.Count > 0)
+            {
+                Noeud courant = pile.Pop();
+                
+                resultat.Push(courant);
+
+                foreach (Lien lien in ListLien)
+                {
+                    Noeud voisin = null;
+
+                    if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
+                        voisin = lien.Noeud2;
+                    else if (lien.Noeud2 == courant && (lien.Direction == 0 || lien.Direction == 2))
+                        voisin = lien.Noeud1;
+
+                    if (voisin != null && !visite.Contains(voisin))
+                    {
+                        visite.Add(voisin);
+                        pile.Push(voisin);
+                    }
+                }
+            }
+
+            return resultat;
+        }
 
         /// <summary>
         /// Retourne vrai si le graphe contient un cycle
@@ -226,11 +258,11 @@ namespace Liv_In_Paris
             Dictionary<Noeud, Noeud> parents = new Dictionary<Noeud, Noeud>();
             pile.Push(depart);
             visites.Add(depart);
-            parents[depart] = null;  
+            parents[depart] = null;
 
             while (pile.Count > 0)
             {
-                Noeud courant = pile.Pop();  
+                Noeud courant = pile.Pop();
                 foreach (Lien lien in ListLien)
                 {
                     Noeud voisin = null;
@@ -244,22 +276,24 @@ namespace Liv_In_Paris
                     {
                         if (visites.Contains(voisin) && parents[courant] != voisin)
                         {
-                            return true; 
+                            return true;
                         }
 
                         if (!visites.Contains(voisin))
                         {
                             pile.Push(voisin);
                             visites.Add(voisin);
-                            parents[voisin] = courant;  
+                            parents[voisin] = courant;
                         }
                     }
                 }
             }
-            
+
 
             return false;
         }
+
+
 
         /// <summary>
         /// Retourne l'ordre du graphe (nombre de sommets)
