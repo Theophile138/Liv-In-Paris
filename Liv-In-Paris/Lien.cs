@@ -29,6 +29,13 @@ namespace Liv_In_Paris
             this.poid = poid;
         }
 
+
+        /// <summary>
+        /// Retourne vrai si le lien contient les deux noeuds en paramètre
+        /// </summary>
+        /// <param name="noeud1_"></param>
+        /// <param name="noeud2_"></param>
+        /// <returns></returns>
         public bool Contient(Noeud noeud1_ , Noeud noeud2_)
         {
             bool result = false;
@@ -44,6 +51,13 @@ namespace Liv_In_Paris
             return result;
         }
 
+
+        /// <summary>
+        /// Retourne vrai si le lien est dans la bonne direction
+        /// </summary>
+        /// <param name="noeud1_">premier noeud</param>
+        /// <param name="noeud2_">deuxieme noeud</param>
+        /// <returns></returns>
         public bool BonneDirection(Noeud noeud1_, Noeud noeud2_)
         {
             bool result = false;

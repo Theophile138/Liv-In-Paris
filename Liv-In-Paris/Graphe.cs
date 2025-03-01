@@ -11,6 +11,11 @@ namespace Liv_In_Paris
 {
     public class Graphe
     {
+
+        /// <summary>
+        /// Retourne la matrice d'adjacence du graphe
+        /// </summary>
+        /// <returns></returns>
         public int[,] MatriceAdj()
         {
 
@@ -40,6 +45,9 @@ namespace Liv_In_Paris
 
         }
 
+        /// <summary>
+        /// Affiche la matrice d'adjacence du graphe
+        /// </summary>
         public void AfficherMatriceAdj()
         {
             int[,] matadj = MatriceAdj();
@@ -55,6 +63,11 @@ namespace Liv_In_Paris
             }
         }
 
+        /// <summary>
+        /// Retourne le noeud correspondant au numero
+        /// </summary>
+        /// <param name="num">numéro du noeud que l'on souhaite retourner</param>
+        /// <returns></returns>
         public Noeud FindNoeud(int num)
         {
             Noeud myNoeud = null;
@@ -70,6 +83,12 @@ namespace Liv_In_Paris
             return myNoeud;
         }
 
+        /// <summary>
+        /// Retourne vrai si le lien existe entre les deux noeuds
+        /// </summary>
+        /// <param name="noeud1">premier noeud</param>
+        /// <param name="noeud2">deuxieme noeud</param>
+        /// <returns></returns>
         public bool LienExiste(Noeud noeud1 , Noeud noeud2)
         {
             bool result = false;
@@ -86,7 +105,10 @@ namespace Liv_In_Paris
             return result;
         }
 
-
+        /// <summary>
+        /// Retourne le nombre de noeud du graphe
+        /// </summary>
+        /// <returns></returns>
         public int GetNbrNoeud()
         {
             return ListNoeud.Length;
@@ -100,6 +122,11 @@ namespace Liv_In_Paris
             this.ListNoeud = ListNoeud;
             this.ListLien = ListLien;
         }
+
+        /// <summary>
+        /// Parcours en profondeur du graphe
+        /// </summary>
+        /// <param name="depart">Noeuf de départ du parcours</param>
         public void ParcoursLargeur(Noeud depart)
         {
             Queue<Noeud> file = new Queue<Noeud>();
@@ -131,8 +158,12 @@ namespace Liv_In_Paris
             }
         }
 
+        /// <summary>
+        /// Retourne vrai si le graphe est connexe
+        /// </summary>
+        /// <returns></returns>
         public bool Connexe() {
-            Stack<Noeud> pile = ParcoursProfondeurAvecPile(ListNoeud[0]);
+            Stack<Noeud> pile = ParcoursProfondeur(ListNoeud[0]);
             int nbrnoeud = GetNbrNoeud();
             if (pile.Count == nbrnoeud)
             {
@@ -140,46 +171,53 @@ namespace Liv_In_Paris
             }
             else { return false; }
         }
-        public Stack<Noeud> ParcoursProfondeurAvecPile(Noeud depart)
+
+
+        /// <summary>
+        /// Parcours en profondeur du graphe
+        /// </summary>
+        /// <param name="depart"></param>
+        /// <returns></returns>
+        public Stack<Noeud> ParcoursProfondeur(Noeud depart)
         {
             Stack<Noeud> pile = new Stack<Noeud>();
             HashSet<Noeud> visite = new HashSet<Noeud>();
-            Stack<Noeud> resultat = new Stack<Noeud>();  
-
+            Stack<Noeud> resultat = new Stack<Noeud>();
             pile.Push(depart);
+            visite.Add(depart);
 
             while (pile.Count > 0)
             {
                 Noeud courant = pile.Pop();
-                Console.WriteLine("Sommet : " + courant.toString());
+                Console.WriteLine("Sommet : " + courant.Numero);
+                resultat.Push(courant);
 
-                if (!visite.Contains(courant))
+                foreach (Lien lien in ListLien)
                 {
-                    visite.Add(courant);
-                    resultat.Push(courant); 
+                    Noeud voisin = null;
 
-                    foreach (Lien lien in ListLien)
+                    if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
+                        voisin = lien.Noeud2;
+                    else if (lien.Noeud2 == courant && (lien.Direction == 0 || lien.Direction == 2))
+                        voisin = lien.Noeud1;
+
+                    if (voisin != null && !visite.Contains(voisin))
                     {
-                        Noeud voisin = null;
-
-                        if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
-                            voisin = lien.Noeud2;
-                        else if (lien.Noeud2 == courant && (lien.Direction == 0 || lien.Direction == 2))
-                            voisin = lien.Noeud1;
-
-                        if (voisin != null && !visite.Contains(voisin))
-                        {
-                            pile.Push(voisin);
-                            
-                        }
+                        visite.Add(voisin);  
+                        pile.Push(voisin);
                     }
                 }
             }
 
-            return resultat; 
+            return resultat;
         }
 
 
+        /// <summary>
+        /// Retourne vrai si le graphe contient un cycle
+        /// </summary>
+        /// <param name="depart">Noeud de départ pour chercher les cycles</param>
+        /// <returns></returns>
         public bool ContientCycle(Noeud depart)
         {
             HashSet<Noeud> visites = new HashSet<Noeud>();
@@ -222,13 +260,28 @@ namespace Liv_In_Paris
 
             return false;
         }
+
+        /// <summary>
+        /// Retourne l'ordre du graphe (nombre de sommets)
+        /// </summary>
+        /// <returns></returns>
         public int OrdreDuGraphe()
         {
             return ListNoeud.Length;
         }
+
+        /// <summary>
+        /// Retourne la taille du graphe (nombre d'arêtes)
+        /// </summary>
+        /// <returns></returns>
         public int TailleDuGraphe() {
             return ListLien.Length;
         }
+
+        /// <summary>
+        /// Retourne true si le graphe est pondéré
+        /// </summary>
+        /// <returns></returns>
         public bool Pondere()
         {
             int compteur = 0;
@@ -244,6 +297,11 @@ namespace Liv_In_Paris
                 return false; 
             }
         }
+
+        /// <summary>
+        /// Retourne true si le graphe est orienté
+        /// </summary>
+        /// <returns></returns>
         public bool Oriente()
         {
             bool b = false;

@@ -14,7 +14,7 @@ namespace Liv_In_Paris
 
             Graphe myGraphe = Fichier.LoadGraph("grapheSimple.txt");
             //Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
-            //Graphe myGraphe = Fichier.LoadGraph("felix.txt");
+            //Graphe myGraphe = Fichier.LoadGraph("grapheSimple");
 
             myGraphe.AfficherMatriceAdj();
 
@@ -24,11 +24,11 @@ namespace Liv_In_Paris
             Noeud NoeudDep = myGraphe.FindNoeud(NoeudDepart);
 
 
-            Console.WriteLine("Parcours en Largeur du graphe :");
-            myGraphe.ParcoursLargeur(NoeudDep);
+           // Console.WriteLine("Parcours en Largeur du graphe :");
+            //myGraphe.ParcoursLargeur(NoeudDep);
 
             Console.WriteLine("Parcours en Profondeur du graphe :");
-            myGraphe.ParcoursProfondeurAvecPile(NoeudDep);
+            myGraphe.ParcoursProfondeur(NoeudDep);
 
  
             if (myGraphe.ContientCycle(NoeudDep) == true)
