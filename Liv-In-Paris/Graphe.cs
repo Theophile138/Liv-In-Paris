@@ -91,14 +91,14 @@ namespace Liv_In_Paris
             return ListNoeud.Length;
         }
 
-            public Noeud[] ListNoeud;
-            public Lien[] ListLien;
+        public Noeud[] ListNoeud;
+        public Lien[] ListLien;
 
-            public Graphe(Noeud[] ListNoeud , Lien[] ListLien) 
-            { 
-                this.ListNoeud = ListNoeud;
-                this.ListLien = ListLien;
-            }
+        public Graphe(Noeud[] ListNoeud , Lien[] ListLien) 
+        { 
+            this.ListNoeud = ListNoeud;
+            this.ListLien = ListLien;
+        }
         public void ParcoursLargeur(Noeud depart)
         {
             Queue<Noeud> file = new Queue<Noeud>();

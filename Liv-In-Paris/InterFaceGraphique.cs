@@ -19,8 +19,8 @@ namespace Liv_In_Paris
         public InterFaceGraphique(Graphe graphe)
         {
             this.graphe = graphe;
-            this.Width = 800;
-            this.Height = 600;
+            this.Width = 1000;
+            this.Height = 1000;
             this.Text = "Visualisation du Graphe";
             this.DoubleBuffered = true; // Réduit le scintillement
 
@@ -51,6 +51,16 @@ namespace Liv_In_Paris
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             Pen pen = new Pen(Color.Black, 2);
             int nodeRadius = 30;
+
+            // 1️⃣ Dessiner les **boucles** (lien d'un nœud vers lui-même)
+            foreach (Lien lien in graphe.ListLien)
+            {
+                if (lien.Noeud1 == lien.Noeud2) // Vérifie si c'est une boucle
+                {
+                    DrawLoop(g, positions[lien.Noeud1.Numero]);
+                }
+            }
+
 
             // Dessiner les liens
             foreach (Lien lien in graphe.ListLien)
@@ -86,6 +96,21 @@ namespace Liv_In_Paris
         private void InitializeComponent()
         {
 
+        }
+
+        private void DrawLoop(Graphics g, Point nodePos)
+        {
+            int loopSize = 40; // Taille de la boucle
+            Pen loopPen = new Pen(Color.Black, 2);
+
+            // Définir la position du rectangle pour dessiner un arc
+            Rectangle rect = new Rectangle(nodePos.X - loopSize / 2, nodePos.Y - loopSize - 10, loopSize, loopSize);
+
+            // Dessiner l'arc (une partie d'un cercle)
+            g.DrawArc(loopPen, rect, 0, 360); // 300° pour une belle boucle
+
+            // Dessiner une flèche sur la boucle
+            //DrawArrow(g, new Point(nodePos.X, nodePos.Y - loopSize / 2), new Point(nodePos.X + 10, nodePos.Y - loopSize / 2));
         }
 
         private void DrawArrow(Graphics g, Point start, Point end)
