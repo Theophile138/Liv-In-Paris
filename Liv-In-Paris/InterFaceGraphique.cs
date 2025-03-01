@@ -16,6 +16,10 @@ namespace Liv_In_Paris
         private Graphe graphe;
         private Dictionary<int, Point> positions = new Dictionary<int, Point>();
 
+        /// <summary>
+        /// Constructeur de la clase interface graphique, demande un graphe
+        /// </summary>
+        /// <param name="graphe">Graphe</param>
         public InterFaceGraphique(Graphe graphe)
         {
             this.graphe = graphe;
@@ -28,6 +32,9 @@ namespace Liv_In_Paris
             this.Paint += new PaintEventHandler(DrawGraph);
         }
 
+        /// <summary>
+        /// Cette fonction met et crée les coordonnées des points des sommets de façon circulaire
+        /// </summary>
         private void PositionNodesCircular()
         {
             int centerX = this.ClientSize.Width / 2;
@@ -45,6 +52,11 @@ namespace Liv_In_Paris
             }
         }
 
+        /// <summary>
+        /// Cette methode dessine les noeuds , les liens et le boucle si un lien pointe sur lui même
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DrawGraph(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -52,31 +64,31 @@ namespace Liv_In_Paris
             Pen pen = new Pen(Color.Black, 2);
             int nodeRadius = 30;
 
-            // 1️⃣ Dessiner les **boucles** (lien d'un nœud vers lui-même)
+
             foreach (Lien lien in graphe.ListLien)
             {
-                if (lien.Noeud1 == lien.Noeud2) // Vérifie si c'est une boucle
+                if (lien.Noeud1 == lien.Noeud2) 
                 {
                     DrawLoop(g, positions[lien.Noeud1.Numero]);
                 }
             }
 
 
-            // Dessiner les liens
+
             foreach (Lien lien in graphe.ListLien)
             {
                 Point p1 = positions[lien.Noeud1.Numero];
                 Point p2 = positions[lien.Noeud2.Numero];
                 g.DrawLine(pen, p1, p2);
 
-                // Dessiner la flèche si le lien est dirigé
+ 
                 if (lien.Direction == 1)
                 {
                     DrawArrow(g, p1, p2);
                 }
             }
 
-            // Dessiner les nœuds
+
             foreach (var kvp in positions)
             {
                 int nodeId = kvp.Key;
@@ -93,26 +105,35 @@ namespace Liv_In_Paris
             }
         }
 
+        /// <summary>
+        /// fonctionne généré automatiquement mais non utilisé 
+        /// </summary>
         private void InitializeComponent()
         {
 
         }
 
+        /// <summary>
+        /// methode qui dessine les liens des points qui pointes vers eux même
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="nodePos"></param>
         private void DrawLoop(Graphics g, Point nodePos)
         {
-            int loopSize = 40; // Taille de la boucle
+            int loopSize = 40; 
             Pen loopPen = new Pen(Color.Black, 2);
 
-            // Définir la position du rectangle pour dessiner un arc
             Rectangle rect = new Rectangle(nodePos.X - loopSize / 2, nodePos.Y - loopSize - 10, loopSize, loopSize);
 
-            // Dessiner l'arc (une partie d'un cercle)
-            g.DrawArc(loopPen, rect, 0, 360); // 300° pour une belle boucle
+            g.DrawArc(loopPen, rect, 0, 360); 
 
-            // Dessiner une flèche sur la boucle
-            //DrawArrow(g, new Point(nodePos.X, nodePos.Y - loopSize / 2), new Point(nodePos.X + 10, nodePos.Y - loopSize / 2));
         }
-
+        /// <summary>
+        /// methode qui dessine les liens entre sommets 
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
         private void DrawArrow(Graphics g, Point start, Point end)
         {
             double angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
