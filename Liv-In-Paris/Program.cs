@@ -24,8 +24,8 @@ namespace Liv_In_Paris
             Noeud NoeudDep = myGraphe.FindNoeud(NoeudDepart);
 
 
-           // Console.WriteLine("Parcours en Largeur du graphe :");
-            //myGraphe.ParcoursLargeur(NoeudDep);
+            Console.WriteLine("Parcours en Largeur du graphe :");
+            myGraphe.ParcoursLargeur(NoeudDep);
 
             Console.WriteLine("Parcours en Profondeur du graphe :");
             myGraphe.ParcoursProfondeur(NoeudDep);
