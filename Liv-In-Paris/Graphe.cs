@@ -131,18 +131,6 @@ namespace Liv_In_Paris
             }
         }
 
-       
-        public Noeud TrouverNoeudParNumero(int numero)
-        {
-            foreach (Noeud noeud in ListNoeud)
-            {
-                if (noeud.Numero == numero)
-                {
-                    return noeud;
-                }
-            }
-            return null; 
-        }
         public bool Connexe() {
             Stack<Noeud> pile = ParcoursProfondeurAvecPile(ListNoeud[0]);
             int nbrnoeud = GetNbrNoeud();
@@ -163,6 +151,7 @@ namespace Liv_In_Paris
             while (pile.Count > 0)
             {
                 Noeud courant = pile.Pop();
+                Console.WriteLine("Sommet : " + courant.ToString());
 
                 if (!visite.Contains(courant))
                 {
@@ -181,6 +170,7 @@ namespace Liv_In_Paris
                         if (voisin != null && !visite.Contains(voisin))
                         {
                             pile.Push(voisin);
+                            
                         }
                     }
                 }

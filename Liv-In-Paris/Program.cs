@@ -11,32 +11,65 @@ namespace Liv_In_Paris
         static void Main(string[] args)
         {
             AllocConsole(); // Ouvre la console
-            Console.WriteLine("selectionne un noeud de depart pour tester nos fonctions");
-            int NoeudDepart = int.Parse(Console.ReadLine());
 
-
-            //Graphe myGraphe = Fichier.LoadGraph("grapheSimple.txt");
-            Console.WriteLine("Console activée !");
-            Noeud NoeudDep = myGraphe.TrouverNoeudParNumero(NoeudDepart);
-
-
+            Graphe myGraphe = Fichier.LoadGraph("grapheSimple.txt");
             //Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
-            Console.WriteLine(myGraphe.TailleDuGraphe()+"  "+myGraphe.OrdreDuGraphe());
-
-            Graphe myGraphe = Fichier.LoadGraph("felix.txt");
-
-            Console.WriteLine("Console activée !");
-
-            Noeud NoeudDep = myGraphe.TrouverNoeudParNumero(NoeudDepart);
-
-            myGraphe.ParcoursLargeur(NoeudDep);
-
-            //myGraphe.ParcoursProfondeur(NoeudDep);
+            //Graphe myGraphe = Fichier.LoadGraph("felix.txt");
 
             myGraphe.AfficherMatriceAdj();
 
-            Application.Run(new InterFaceGraphique(myGraphe) { Width = 1000, Height = 1000 });
+            Console.WriteLine("Selectionne un noeud de depart pour tester nos fonctions");
+            int NoeudDepart = int.Parse(Console.ReadLine());
+
+            Noeud NoeudDep = myGraphe.FindNoeud(NoeudDepart);
+
+
+            Console.WriteLine("Parcours en Largeur du graphe :");
+            myGraphe.ParcoursLargeur(NoeudDep);
+
+            Console.WriteLine("Parcours en Profondeur du graphe :");
+            myGraphe.ParcoursProfondeurAvecPile(NoeudDep);
+
+ 
+            if (myGraphe.ContientCycle(NoeudDep) == true)
+            {
+                Console.WriteLine("Le graphe contient des cycles");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe ne contient pas de cycles");
+            }
+
+            if (myGraphe.Connexe() == true)
+            {
+                Console.WriteLine("Le graphe est connexe");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe n'est pas connexe");
+            }
+
+            Console.WriteLine("La taille du graphe est : " + myGraphe.TailleDuGraphe() + " l'orde du graphe est : " + myGraphe.OrdreDuGraphe());
             
+            if (myGraphe.Oriente() == true)
+            {
+                Console.WriteLine("Le graphe est oriente");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe n'est pas oriente");
+            }
+
+            if (myGraphe.Pondere() == true)
+            {
+                Console.WriteLine("Le graphe est pondere");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe n'est pas pondere");
+            }
+
+            Application.Run(new InterFaceGraphique(myGraphe) { Width = 1000, Height = 1000 });
         }
     }
 }
