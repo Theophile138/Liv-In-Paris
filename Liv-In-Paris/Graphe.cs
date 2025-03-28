@@ -163,7 +163,7 @@ namespace Liv_In_Paris
         /// </summary>
         /// <returns></returns>
         public bool Connexe() {
-            Stack<Noeud> pile = ParcoursProfondeurSansWriteLine(ListNoeud[0]);
+            Stack<Noeud> pile = ParcoursProfondeur(ListNoeud[0],false);
             int nbrnoeud = GetNbrNoeud();
             if (pile.Count == nbrnoeud)
             {
@@ -178,7 +178,7 @@ namespace Liv_In_Paris
         /// </summary>
         /// <param name="depart"></param>
         /// <returns></returns>
-        public Stack<Noeud> ParcoursProfondeur(Noeud depart)
+        public Stack<Noeud> ParcoursProfondeur(Noeud depart, bool showConsole = true)
         {
             Stack<Noeud> pile = new Stack<Noeud>();
             HashSet<Noeud> visite = new HashSet<Noeud>();
@@ -189,7 +189,10 @@ namespace Liv_In_Paris
             while (pile.Count > 0)
             {
                 Noeud courant = pile.Pop();
-                Console.WriteLine("Sommet : " + courant.Numero);
+                if (showConsole == true)
+                {
+                    Console.WriteLine("Sommet : " + courant.Numero);
+                }
                 resultat.Push(courant);
 
                 foreach (Lien lien in ListLien)

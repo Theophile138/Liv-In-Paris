@@ -8,6 +8,7 @@ namespace Liv_In_Paris
         static extern bool AllocConsole();
 
         [STAThread]
+
         static void Main(string[] args)
         {
             AllocConsole(); // Ouvre la console
