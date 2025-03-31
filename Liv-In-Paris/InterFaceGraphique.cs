@@ -23,7 +23,7 @@ namespace Liv_In_Paris
         public InterFaceGraphique(Graphe graphe)
         {
             this.graphe = graphe;
-            this.Width = 1000;
+            this.Width = 1800;
             this.Height = 1000;
             this.Text = "Visualisation du Graphe";
             this.DoubleBuffered = true; // Réduit le scintillement
@@ -31,6 +31,20 @@ namespace Liv_In_Paris
             PositionNodesCircular();  // Positionner les nœuds sans chevauchement
             this.Paint += new PaintEventHandler(DrawGraph);
         }
+        
+        private void positionMetro()
+        {
+            // Get min Longitude ; max Longitude ; min Latitude ; max Latitude
+            Fichier.getCleanTabCsv("Noeud_Metro.csv");
+
+            int nodeCount = graphe.ListNoeud.Length;
+
+            for(int i = 0; i < nodeCount; i++)
+            {
+
+            }
+        }
+
 
         /// <summary>
         /// Cette fonction met et crée les coordonnées des points des sommets de façon circulaire

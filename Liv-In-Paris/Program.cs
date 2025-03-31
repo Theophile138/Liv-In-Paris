@@ -12,10 +12,12 @@ namespace Liv_In_Paris
         static void Main(string[] args)
         {
             AllocConsole(); // Ouvre la console
-
-            Graphe myGraphe = Fichier.LoadGraph("grapheSimple.txt");
+            
+            //Graphe myGraphe = Fichier.LoadGraphTxt("grapheSimple.txt");
             //Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
             //Graphe myGraphe = Fichier.LoadGraph("grapheSimple");
+
+            Graphe myGraphe = Fichier.LoadGraphCsv("Arc_Metro.csv");
 
             myGraphe.AfficherMatriceAdj();
 
@@ -70,7 +72,7 @@ namespace Liv_In_Paris
                 Console.WriteLine("Le graphe n'est pas pondere");
             }
 
-            Application.Run(new InterFaceGraphique(myGraphe) { Width = 1000, Height = 1000 });
+            Application.Run(new InterFaceGraphique(myGraphe) { Width = 1800, Height = 1000 });
         }
     }
 }

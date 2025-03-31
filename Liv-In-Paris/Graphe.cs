@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace Liv_In_Paris
 {
-    public class Graphe
+    public class Graphe<T>
     {
 
         /// <summary>
@@ -24,11 +24,11 @@ namespace Liv_In_Paris
             // Remplissage de la matrice
             for (int i = 0; i < GetNbrNoeud(); i++)
             {
-               Noeud myNoeud2 = FindNoeud(i+1);
+               Noeud<T> myNoeud2 = FindNoeud(i+1);
 
                 for(int j = 0; j <  GetNbrNoeud(); j++)
                 {
-                    Noeud myNoeud1 = FindNoeud(j+1);
+                    Noeud<T> myNoeud1 = FindNoeud(j+1);
 
                     if (LienExiste(myNoeud1,myNoeud2) == true)
                     {
@@ -68,9 +68,9 @@ namespace Liv_In_Paris
         /// </summary>
         /// <param name="num">numéro du noeud que l'on souhaite retourner</param>
         /// <returns></returns>
-        public Noeud FindNoeud(int num)
+        public Noeud<T> FindNoeud(int num)
         {
-            Noeud myNoeud = null;
+            Noeud<T> myNoeud = null;
             for (int i = 0; i < ListNoeud.Length; i++)
             {
 
@@ -89,7 +89,7 @@ namespace Liv_In_Paris
         /// <param name="noeud1">premier noeud</param>
         /// <param name="noeud2">deuxieme noeud</param>
         /// <returns></returns>
-        public bool LienExiste(Noeud noeud1 , Noeud noeud2)
+        public bool LienExiste(Noeud<T> noeud1 , Noeud<T> noeud2)
         {
             bool result = false;
             for (int i = 0; i < ListLien.Length; i++)
@@ -114,10 +114,10 @@ namespace Liv_In_Paris
             return ListNoeud.Length;
         }
 
-        public Noeud[] ListNoeud;
-        public Lien[] ListLien;
+        public Noeud<T>[] ListNoeud;
+        public Lien<T>[] ListLien;
 
-        public Graphe(Noeud[] ListNoeud , Lien[] ListLien) 
+        public Graphe(Noeud<T> [] ListNoeud , Lien<T>[] ListLien) 
         { 
             this.ListNoeud = ListNoeud;
             this.ListLien = ListLien;
@@ -127,22 +127,22 @@ namespace Liv_In_Paris
         /// Parcours en profondeur du graphe
         /// </summary>
         /// <param name="depart">Noeuf de départ du parcours</param>
-        public void ParcoursLargeur(Noeud depart)
+        public void ParcoursLargeur(Noeud<T> depart)
         {
-            Queue<Noeud> file = new Queue<Noeud>();
-            HashSet<Noeud> visite = new HashSet<Noeud>();
+            Queue<Noeud<T>> file = new Queue<Noeud<T>>();
+            HashSet<Noeud<T>> visite = new HashSet<Noeud<T>>();
 
             file.Enqueue(depart);
             visite.Add(depart);
 
             while (file.Count > 0)
             {
-                Noeud courant = file.Dequeue();
+                Noeud<T> courant = file.Dequeue();
                 Console.WriteLine($"Visite : {courant.Numero}");
 
-                foreach (Lien lien in ListLien)
+                foreach (Lien<T> lien in ListLien)
                 {
-                    Noeud voisin = null;
+                    Noeud<T> voisin = null;
 
                     if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
                         voisin = lien.Noeud2;
@@ -163,7 +163,7 @@ namespace Liv_In_Paris
         /// </summary>
         /// <returns></returns>
         public bool Connexe() {
-            Stack<Noeud> pile = ParcoursProfondeur(ListNoeud[0],false);
+            Stack<Noeud<T>> pile = ParcoursProfondeur(ListNoeud[0],false);
             int nbrnoeud = GetNbrNoeud();
             if (pile.Count == nbrnoeud)
             {
@@ -178,26 +178,26 @@ namespace Liv_In_Paris
         /// </summary>
         /// <param name="depart"></param>
         /// <returns></returns>
-        public Stack<Noeud> ParcoursProfondeur(Noeud depart, bool showConsole = true)
+        public Stack<Noeud<T>> ParcoursProfondeur(Noeud<T> depart, bool showConsole = true)
         {
-            Stack<Noeud> pile = new Stack<Noeud>();
-            HashSet<Noeud> visite = new HashSet<Noeud>();
-            Stack<Noeud> resultat = new Stack<Noeud>();
+            Stack<Noeud<T>> pile = new Stack<Noeud<T>>();
+            HashSet<Noeud<T>> visite = new HashSet<Noeud<T>>();
+            Stack<Noeud<T>> resultat = new Stack<Noeud<T>>();
             pile.Push(depart);
             visite.Add(depart);
 
             while (pile.Count > 0)
             {
-                Noeud courant = pile.Pop();
+                Noeud<T> courant = pile.Pop();
                 if (showConsole == true)
                 {
                     Console.WriteLine("Sommet : " + courant.Numero);
                 }
                 resultat.Push(courant);
 
-                foreach (Lien lien in ListLien)
+                foreach (Lien<T> lien in ListLien)
                 {
-                    Noeud voisin = null;
+                    Noeud<T> voisin = null;
 
                     if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
                         voisin = lien.Noeud2;
@@ -214,23 +214,23 @@ namespace Liv_In_Paris
 
             return resultat;
         }
-        public Stack<Noeud> ParcoursProfondeurSansWriteLine(Noeud depart)
+        public Stack<Noeud<T>> ParcoursProfondeurSansWriteLine(Noeud<T> depart)
         {
-            Stack<Noeud> pile = new Stack<Noeud>();
-            HashSet<Noeud> visite = new HashSet<Noeud>();
-            Stack<Noeud> resultat = new Stack<Noeud>();
+            Stack<Noeud<T>> pile = new Stack<Noeud<T>>();
+            HashSet<Noeud<T>> visite = new HashSet<Noeud<T>>();
+            Stack<Noeud<T>> resultat = new Stack<Noeud<T>>();
             pile.Push(depart);
             visite.Add(depart);
 
             while (pile.Count > 0)
             {
-                Noeud courant = pile.Pop();
+                Noeud<T> courant = pile.Pop();
                 
                 resultat.Push(courant);
 
-                foreach (Lien lien in ListLien)
+                foreach (Lien<T> lien in ListLien)
                 {
-                    Noeud voisin = null;
+                    Noeud<T> voisin = null;
 
                     if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
                         voisin = lien.Noeud2;
@@ -253,22 +253,22 @@ namespace Liv_In_Paris
         /// </summary>
         /// <param name="depart">Noeud de départ pour chercher les cycles</param>
         /// <returns></returns>
-        public bool ContientCycle(Noeud depart)
+        public bool ContientCycle(Noeud<T> depart)
         {
-            HashSet<Noeud> visites = new HashSet<Noeud>();
-            Stack<Noeud> pile = new Stack<Noeud>();
+            HashSet<Noeud<T>> visites = new HashSet<Noeud<T>>();
+            Stack<Noeud<T>> pile = new Stack<Noeud<T>>();
 
-            Dictionary<Noeud, Noeud> parents = new Dictionary<Noeud, Noeud>();
+            Dictionary<Noeud<T>, Noeud<T>> parents = new Dictionary<Noeud<T>, Noeud<T>>();
             pile.Push(depart);
             visites.Add(depart);
             parents[depart] = null;
 
             while (pile.Count > 0)
             {
-                Noeud courant = pile.Pop();
-                foreach (Lien lien in ListLien)
+                Noeud<T> courant = pile.Pop();
+                foreach (Lien<T> lien in ListLien)
                 {
-                    Noeud voisin = null;
+                    Noeud<T> voisin = null;
 
                     if (lien.Noeud1 == courant && (lien.Direction == 0 || lien.Direction == 1))
                         voisin = lien.Noeud2;

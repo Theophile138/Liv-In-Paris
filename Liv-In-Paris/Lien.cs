@@ -7,21 +7,21 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Liv_In_Paris
 {
-    public class Lien
+    public class Lien<T>
     {
 
-        Noeud noeud1;
-        Noeud noeud2;
+        Noeud<T> noeud1;
+        Noeud<T> noeud2;
         int poid;
         int direction;
 
-        public Noeud Noeud1 { get { return noeud1; } }
-        public Noeud Noeud2 { get { return noeud2; } }
+        public Noeud<T> Noeud1 { get { return noeud1; } }
+        public Noeud<T> Noeud2 { get { return noeud2; } }
 
         public int Direction { get { return direction; } }
         public int Poid {  get { return poid; } }
 
-        public Lien(Noeud noeud1, Noeud noeud2, int direction = 0 , int poid = 0)
+        public Lien(Noeud<T> noeud1, Noeud<T> noeud2, int direction = 0 , int poid = 0)
         {
             this.noeud1 = noeud1;
             this.noeud2 = noeud2;
@@ -36,7 +36,7 @@ namespace Liv_In_Paris
         /// <param name="noeud1_"></param>
         /// <param name="noeud2_"></param>
         /// <returns></returns>
-        public bool Contient(Noeud noeud1_ , Noeud noeud2_)
+        public bool Contient(Noeud<T> noeud1_ , Noeud<T> noeud2_)
         {
             bool result = false;
             if ((noeud1_ == noeud1) && (noeud2_ == noeud2)){
@@ -58,7 +58,7 @@ namespace Liv_In_Paris
         /// <param name="noeud1_">premier noeud</param>
         /// <param name="noeud2_">deuxieme noeud</param>
         /// <returns></returns>
-        public bool BonneDirection(Noeud noeud1_, Noeud noeud2_)
+        public bool BonneDirection(Noeud<T>  noeud1_, Noeud<T> noeud2_)
         {
             bool result = false;
             if ((Contient(noeud1_, noeud2_) == true) && (direction == 0))
