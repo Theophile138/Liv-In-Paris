@@ -19,5 +19,9 @@ namespace Liv_In_Paris
             numero = num;
         }
 
+        public string toString()
+        {
+            return numero.ToString();
+        }
     }
 }

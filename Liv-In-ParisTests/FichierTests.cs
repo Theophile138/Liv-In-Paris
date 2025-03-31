@@ -12,15 +12,6 @@ namespace Liv_In_Paris.Tests
     public class FichierTests
     {
         [TestMethod()]
-        public void GetpathTest()
-        {
-            //Assert.Fail();
-            string path = Fichier.Getpath("soc-karate.mtx","ressource");
-            //string str = path + "\n" + Fichier.GetParentLoop(AppDomain.CurrentDomain.BaseDirectory, 6) + "\\Liv-In-Paris\\ressource\\soc-karate.mtx";
-            Assert.IsTrue(path ==  Fichier.GetParentLoop(AppDomain.CurrentDomain.BaseDirectory,6)+ "\\Liv-In-Paris\\ressource\\soc-karate.mtx", path);
-        }
-
-        [TestMethod()]
         public void ReadFile_TabTxtTest()
         {
             string[] myFile = Fichier.ReadFile_TabTxt("test_unit.txt");

@@ -8,42 +8,73 @@ namespace Liv_In_Paris
         static extern bool AllocConsole();
 
         [STAThread]
+
         static void Main(string[] args)
         {
             AllocConsole(); // Ouvre la console
-            Console.WriteLine("selectionne un noeud de depart pour tester nos fonctions");
-            int NoeudDepart = int.Parse(Console.ReadLine());
-            //Graphe myGraphe = Fichier.LoadGraph("grapheSimple.txt");
 
             Graphe myGraphe = Fichier.LoadGraph("grapheSimple.txt");
+            //Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
+            //Graphe myGraphe = Fichier.LoadGraph("grapheSimple");
 
+            myGraphe.AfficherMatriceAdj();
+
+            Console.WriteLine("Selectionne un noeud de depart pour tester nos fonctions");
+            int NoeudDepart = int.Parse(Console.ReadLine());
+
+            Noeud NoeudDep = myGraphe.FindNoeud(NoeudDepart);
+
+
+            Console.WriteLine("Parcours en Largeur du graphe :");
+            myGraphe.ParcoursLargeur(NoeudDep);
+
+            Console.WriteLine("Parcours en Profondeur du graphe :");
+            myGraphe.ParcoursProfondeur(NoeudDep);
+
+ 
+            if (myGraphe.ContientCycle(NoeudDep) == true)
+            {
+                Console.WriteLine("Le graphe contient des cycles");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe ne contient pas de cycles");
+            }
+
+            if (myGraphe.Connexe() == true)
+            {
+                Console.WriteLine("Le graphe est connexe");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe n'est pas connexe");
+            }
             Console.WriteLine("Console activée !");
-            Noeud NoeudDep = myGraphe.TrouverNoeudParNumero(NoeudDepart);
+            //Noeud NoeudDep = myGraphe.TrouverNoeudParNumero(NoeudDepart);
 
             myGraphe.AfficherMatriceAdj();
             //Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
             Console.WriteLine(myGraphe.TailleDuGraphe()+"  "+myGraphe.OrdreDuGraphe());
 
-            //Console.WriteLine("Fini");
+            Console.WriteLine("La taille du graphe est : " + myGraphe.TailleDuGraphe() + " l'orde du graphe est : " + myGraphe.OrdreDuGraphe());
+            
+            if (myGraphe.Oriente() == true)
+            {
+                Console.WriteLine("Le graphe est oriente");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe n'est pas oriente");
+            }
 
-
-
-            int[] mat = myGraphe.Djikstra(1);
-            Graphe.AfficherMatrice(mat);
-            Application.Run(new InterFaceGraphique(myGraphe) { Width = 1000, Height = 1000 });
-        }
-        public void Annexe() {
-            Graphe myGraphe = Fichier.LoadGraph("soc-karate.mtx");
-
-            Console.WriteLine(myGraphe.TailleDuGraphe() + "  " + myGraphe.OrdreDuGraphe());
-
-            //Console.WriteLine("Fini");
-
-            int[,] tab2D = new int[3, 2]{
-                               {3, 3},
-                               {1, 1},
-                               {2, 2}
-                            };
+            if (myGraphe.Pondere() == true)
+            {
+                Console.WriteLine("Le graphe est pondere");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe n'est pas pondere");
+            }
 
             Application.Run(new InterFaceGraphique(myGraphe) { Width = 1000, Height = 1000 });
 
