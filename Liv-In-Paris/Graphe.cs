@@ -48,14 +48,14 @@ namespace Liv_In_Paris
 
         public int[] Djikstra(int debut)
         {
-            debut--;
+            
             int[,] matadj = MatriceAdj();
             bool[] ouvert = new bool[matadj.GetLength(0)];
             for (int i = 0; i < matadj.GetLength(0); i++)
             {
                 ouvert[i] = true;
             }
-            ouvert[debut] = false;
+            
             int[] Djikstra = new int[ matadj.GetLength(0)];
             for (int i = 0; i < matadj.GetLength(0); i++) {
                 Djikstra[i]=int.MaxValue;
@@ -65,10 +65,10 @@ namespace Liv_In_Paris
             int numNoeud = debut;
             bool ok = true;
             int test = 8;
-            while (test>3) {
+            while (numNoeud!=-1) {
                 ok = false;
                 for (int i = 0; i < matadj.GetLength(0); i++) { if (ouvert[i] == true) { ok = true; } }
-                Djikstra = Iteration( Djikstra, numNoeud);
+                Iteration( Djikstra, numNoeud, matadj);
                 numNoeud=TrouverPlusPetiteValeur(Djikstra, ouvert);
                 test--;
             }
@@ -81,39 +81,31 @@ namespace Liv_In_Paris
 
             for (int i = 0; i < Djikstra.Length; i++)
             {
-                if (ouvert[i] && Djikstra[i] < min)
+                if (ouvert[i] == true && Djikstra[i] < min)
                 {
                     min = Djikstra[i];
                     noeud = i;
                 }
             }
+            if (noeud > -1) { 
+            ouvert[noeud] = false; }
             return noeud;
         }
-        public int[] Iteration(int[] Djikstra, int numnoeud)
+        public void Iteration(int[] distances, int numNoeud, int[,] matadj)
         {
-            int[,] matadj = MatriceAdj();
-            for (int i = 1; i < Djikstra.GetLength(0); i++)
-            {
-                if (matadj[numnoeud, i] != 0)
-                {
+            int n = distances.Length;
 
-                    if (Djikstra[i] == int.MaxValue && matadj[numnoeud, i] != 0)
+            for (int i = 0; i < n; i++)
+            {
+                if (matadj[numNoeud, i] != 0) // Si une arête existe
+                {
+                    int nouvelleDistance = distances[numNoeud] + matadj[numNoeud, i];
+                    if (nouvelleDistance < distances[i])
                     {
-                        Djikstra[i] = matadj[numnoeud, i];
-                    }
-                    else
-                    {
-                        int nouvelleDistance = Djikstra[numnoeud] + matadj[numnoeud, i];
-                        if (nouvelleDistance < Djikstra[i])
-                        {
-                            Djikstra[i] = nouvelleDistance;
-                        }
+                        distances[i] = nouvelleDistance;
                     }
                 }
-
             }
-
-            return Djikstra;
         }
 
         /// <summary>
@@ -129,6 +121,21 @@ namespace Liv_In_Paris
                 for (int j = 0; j < GetNbrNoeud(); j++)
                 {
                     Console.Write(matadj[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        public static void AfficherMatriceAdjstatic(int[,] mat)
+        {
+            
+
+            Console.WriteLine("Matrice d'adjacence :");
+            for (int i = 0; i < mat.GetLength(0); i++)
+            {
+                for (int j = 0; j < mat.GetLength(0); j++)
+                {
+                    Console.Write(mat[i, j] + " ");
                 }
                 Console.WriteLine();
             }

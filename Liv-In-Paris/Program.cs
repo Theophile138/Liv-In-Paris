@@ -8,8 +8,24 @@ namespace Liv_In_Paris
         static extern bool AllocConsole();
 
         [STAThread]
+        static void Main(string[] args) {
+            AllocConsole(); // Ouvre la console
+            
 
-        static void Main(string[] args)
+            Graphe myGraphe = Fichier.LoadGraph("grapheSimple.txt");
+            myGraphe.AfficherMatriceAdj();
+
+            int debut = int.Parse(Console.ReadLine());
+            int[] mat =myGraphe.Djikstra(debut);
+            for (int i = 0; i < mat.Length; i++)
+            {
+                Console.Write(mat[i]+"  ");
+            }
+             Application.Run(new InterFaceGraphique(myGraphe) { Width = 1000, Height = 1000 });
+
+
+        }
+        static void annexe(string[] args)
         {
             AllocConsole(); // Ouvre la console
 
