@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic.Devices;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
@@ -40,6 +41,94 @@ namespace Liv_In_Paris
 
         }
 
+        public int[] Djikstra(int debut)
+        {
+            debut--;
+            int[,] matadj = MatriceAdj();
+            bool[] ouvert = new bool[matadj.GetLength(0)];
+            for (int i = 0; i < matadj.GetLength(0); i++)
+            {
+                ouvert[i] = true;
+            }
+            ouvert[debut] = false;
+            int[] Djikstra = new int[ matadj.GetLength(0)];
+            for (int i = 0; i < matadj.GetLength(0); i++) {
+                Djikstra[i]=int.MaxValue;
+            }
+            Djikstra[debut] = 0;
+           
+            int numNoeud = debut;
+            bool ok = true;
+            int test = 8;
+            while (test>3) {
+                ok = false;
+                for (int i = 0; i < matadj.GetLength(0); i++) { if (ouvert[i] == true) { ok = true; } }
+                Djikstra = Iteration( Djikstra, numNoeud);
+                numNoeud=TrouverPlusPetiteValeur(Djikstra, ouvert);
+                test--;
+            }
+            return Djikstra;
+        }
+        public static int TrouverPlusPetiteValeur(int[] Djikstra, bool[] ouvert)
+        {
+            int min = int.MaxValue;
+            int noeud = -1;
+
+            for (int i = 0; i < Djikstra.Length; i++)
+            {
+                if (ouvert[i] && Djikstra[i] < min)
+                {
+                    min = Djikstra[i];
+                    noeud = i;
+                }
+            }
+
+            if (noeud != -1)
+            {
+                ouvert[noeud] = false;
+            }
+
+            return noeud;
+        }
+        public  int[] Iteration( int[] Djikstra, int numnoeud) {
+            int[,] matadj = MatriceAdj();
+            for (int i = 1; i < Djikstra.GetLength(0); i++) {
+                    if (matadj[numnoeud, i] != 0) {
+                   
+                   if (Djikstra[i] == int.MaxValue && matadj[numnoeud,i]!=0)
+                    {
+                        Djikstra[i] = matadj[numnoeud , i];
+                    }
+                    else 
+                    {
+                        int nouvelleDistance = Djikstra[numnoeud] + matadj[numnoeud, i];
+                        if (nouvelleDistance < Djikstra[i])
+                        {
+                            Djikstra[i] = nouvelleDistance;
+                        }
+                    }
+                }
+            
+            }
+            
+            return Djikstra;
+        }
+
+        public static void AfficherMatrice(int[] matrice)
+        {
+            // Parcours de chaque ligne
+            for (int i = 0; i < matrice.GetLength(0); i++)
+            {
+                
+                    Console.Write(matrice[i] + "\t");
+                }
+                // Nouveau ligne après chaque ligne de la matrice
+                Console.WriteLine();
+        }
+        
+
+
+
         public void AfficherMatriceAdj()
         {
             int[,] matadj = MatriceAdj();
@@ -54,6 +143,8 @@ namespace Liv_In_Paris
                 Console.WriteLine();
             }
         }
+
+
 
         public Noeud FindNoeud(int num)
         {
