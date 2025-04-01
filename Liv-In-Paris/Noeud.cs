@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Sources;
 
 namespace Liv_In_Paris
 {
@@ -10,14 +11,21 @@ namespace Liv_In_Paris
     {
 
         private int numero;
-        public T Value { get;}
+        private T value;
+
+        public T Value { get { return value; } }
 
         public int Numero { get { return numero; } }
 
-        public Noeud(int num, T value)
+        public Noeud(int num)
         {
             numero = num;
-            Value = value;
+            value = default;
+        }
+
+        public void setValue(T value)
+        {
+            this.value = value;
         }
 
         public string toString()

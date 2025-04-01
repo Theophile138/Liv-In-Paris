@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Liv_In_Paris
 {
-    public class Fichier
+    public class Fichier<T>
     {
         /// <summary>
         /// Retourne le chemin du fichier demandé a partir du dossier ou se trouve projet
@@ -152,9 +152,9 @@ namespace Liv_In_Paris
         /// <param name="fileName"></param>
         /// <param name="dirName"></param>
         /// <returns></returns>
-        public static Graphe LoadGraphTxt(string fileName, string dirName = "ressource")
+        public static Graphe<T> LoadGraphTxt(string fileName, string dirName = "ressource")
         {
-            Graphe result = null;
+            Graphe<T> result = null;
 
             string[] fileString = ReadFile_TabTxt(fileName, dirName);
 
@@ -162,16 +162,16 @@ namespace Liv_In_Paris
 
             int numberNoeud = int.Parse(grapheString[0][0]);
 
-            Noeud[] ListNoeud = new Noeud[numberNoeud];
+            Noeud<T>[] ListNoeud = new Noeud<T>[numberNoeud];
 
             for(int i = 0; i < ListNoeud.Length ; i++) 
             {
-                ListNoeud[i] = new Noeud(i+1);
+                ListNoeud[i] = new Noeud<T>(i+1);
             }
 
             int numberLien = int.Parse(grapheString[0][2]);
 
-            Lien[] ListLien = new Lien[numberLien];
+            Lien<T>[] ListLien = new Lien<T>[numberLien];
 
             int index = 0;
 
@@ -180,18 +180,18 @@ namespace Liv_In_Paris
                 int Noeud1 = int.Parse(grapheString[i][0]);
                 int Noeud2 = int.Parse(grapheString[i][1]);
                 
-                ListLien[index] = new Lien(ListNoeud[Noeud1-1], ListNoeud[Noeud2-1], 0, 0);
+                ListLien[index] = new Lien<T>(ListNoeud[Noeud1-1], ListNoeud[Noeud2-1], 0, 0);
                 index++;
             }
 
-            result = new Graphe(ListNoeud, ListLien);
+            result = new Graphe<T>(ListNoeud, ListLien);
 
             return result;
         }
 
-        public static Graphe LoadGraphCsv(string fileName, string dirName = "ressource")
+        public static Graphe<T> LoadGraphCsv(string fileName, string dirName = "ressource")
         {
-            Graphe result = null;
+            Graphe<T> result = null;
 
             string[] fileString = ReadFile_TabTxt(fileName, dirName);
 
@@ -209,11 +209,11 @@ namespace Liv_In_Paris
                 }
             }
 
-            Noeud[] ListNoeud = new Noeud[numberNoeud];
+            Noeud<T>[] ListNoeud = new Noeud<T>[numberNoeud];
 
             for (int i = 0; i < ListNoeud.Length; i++)
             {
-                ListNoeud[i] = new Noeud(i + 1);
+                ListNoeud[i] = new Noeud<T>(i + 1);
             }
 
             //int numberLien = int.Parse(grapheString[0][2]);
@@ -234,7 +234,7 @@ namespace Liv_In_Paris
             }
             */
 
-            List<Lien> liens = new List<Lien>();
+            List<Lien<T>> liens = new List<Lien<T>>();
 
             int positionStationSuiv = 3;
             int positionStationPrec = 2;
@@ -248,18 +248,18 @@ namespace Liv_In_Paris
                 if (int.TryParse(grapheString[i][positionStationSuiv].ToString(), out int value2))
                 {
                     int Noeud2 = value2; // Plus besoin de refaire un int.Parse
-                    liens.Add(new Lien(ListNoeud[Noeud1 - 1], ListNoeud[Noeud2 - 1], 1, positionTempsEntreStation));
+                    liens.Add(new Lien<T>(ListNoeud[Noeud1 - 1], ListNoeud[Noeud2 - 1], 1, positionTempsEntreStation));
                 }
             }
 
-            Lien[] ListLien = new Lien[liens.Count];
+            Lien<T>[] ListLien = new Lien<T>[liens.Count];
 
             for(int i = 0; i < liens.Count; i++)
             {
                 ListLien[i] = liens[i];
             }
             
-            result = new Graphe(ListNoeud, ListLien);
+            result = new Graphe<T>(ListNoeud, ListLien);
 
             return result;
         }

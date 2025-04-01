@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic.Devices;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
@@ -43,6 +44,68 @@ namespace Liv_In_Paris
             }
             return matAdj;
 
+        }
+
+        public int[] Djikstra(int debut)
+        {
+            
+            int[,] matadj = MatriceAdj();
+            bool[] ouvert = new bool[matadj.GetLength(0)];
+            for (int i = 0; i < matadj.GetLength(0); i++)
+            {
+                ouvert[i] = true;
+            }
+            
+            int[] Djikstra = new int[ matadj.GetLength(0)];
+            for (int i = 0; i < matadj.GetLength(0); i++) {
+                Djikstra[i]=int.MaxValue;
+            }
+            Djikstra[debut] = 0;
+           
+            int numNoeud = debut;
+            bool ok = true;
+            int test = 8;
+            while (numNoeud!=-1) {
+                ok = false;
+                for (int i = 0; i < matadj.GetLength(0); i++) { if (ouvert[i] == true) { ok = true; } }
+                Iteration( Djikstra, numNoeud, matadj);
+                numNoeud=TrouverPlusPetiteValeur(Djikstra, ouvert);
+                test--;
+            }
+            return Djikstra;
+        }
+        public static int TrouverPlusPetiteValeur(int[] Djikstra, bool[] ouvert)
+        {
+            int min = int.MaxValue;
+            int noeud = -1;
+
+            for (int i = 0; i < Djikstra.Length; i++)
+            {
+                if (ouvert[i] == true && Djikstra[i] < min)
+                {
+                    min = Djikstra[i];
+                    noeud = i;
+                }
+            }
+            if (noeud > -1) { 
+            ouvert[noeud] = false; }
+            return noeud;
+        }
+        public void Iteration(int[] distances, int numNoeud, int[,] matadj)
+        {
+            int n = distances.Length;
+
+            for (int i = 0; i < n; i++)
+            {
+                if (matadj[numNoeud, i] != 0) // Si une arête existe
+                {
+                    int nouvelleDistance = distances[numNoeud] + matadj[numNoeud, i];
+                    if (nouvelleDistance < distances[i])
+                    {
+                        distances[i] = nouvelleDistance;
+                    }
+                }
+            }
         }
 
         /// <summary>
