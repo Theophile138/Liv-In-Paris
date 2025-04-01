@@ -52,6 +52,7 @@ namespace Liv_In_Paris
             }
             else
             {
+                nodeRadius = 30;
                 PositionNodesCircular();  // Positionner les nœuds sans chevauchement
             }
             this.Paint += new PaintEventHandler(DrawGraph);
@@ -61,7 +62,7 @@ namespace Liv_In_Paris
         {
             using (Graphics g = this.CreateGraphics())
             {
-                g.Clear(Color.White); // Efface tout en mettant un fond blanc
+                g.Clear(SystemColors.Control); // Efface tout en mettant un fond blanc
             }
         }
 
@@ -204,11 +205,18 @@ namespace Liv_In_Paris
 
                 g.DrawEllipse(thickPen, pos.X - nodeRadius / 2, pos.Y - nodeRadius / 2, nodeRadius, nodeRadius);
 
-                // Afficher le numéro du nœud
-                //StringFormat format = new StringFormat();
-                //format.Alignment = StringAlignment.Center;
-                //format.LineAlignment = StringAlignment.Center;
-                //g.DrawString(nodeId.ToString(), new Font("Arial", 12, FontStyle.Bold), Brushes.Black, pos, format);
+                Noeud<T> myNoeud = graphe.ListNoeud[0];
+
+                if (myNoeud.Value is not Station)
+                {
+                    //Afficher le numéro du nœud
+                    StringFormat format = new StringFormat();
+                    format.Alignment = StringAlignment.Center;
+                    format.LineAlignment = StringAlignment.Center;
+                    g.DrawString(nodeId.ToString(), new Font("Arial", 12, FontStyle.Bold), Brushes.Black, pos, format);
+
+                }
+
             }
         }
 
