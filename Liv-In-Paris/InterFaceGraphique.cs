@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.CompilerServices;
+using System.Drawing.Printing;
 
 namespace Liv_In_Paris
 {
@@ -20,6 +21,9 @@ namespace Liv_In_Paris
         private int nodeRadius = 10;
 
         private Button button1;
+        private TextBox txtEditStart;
+        private TextBox txtEditEnd;
+        private Label label1;
 
         private int[] way;
 
@@ -38,14 +42,36 @@ namespace Liv_In_Paris
 
             // Création du bouton
             Button myButton = new Button();
-            myButton.Text = "Cliquez-moi";
-            myButton.Size = new Size(100, 50);
+            myButton.Text = "Recherche du chemin";
+            myButton.Size = new Size(200, 50);
             myButton.Location = new Point(0, 0); // Position dans la fenêtre
 
             // Ajout d'un événement au clic
             myButton.Click += new EventHandler(MyButton_Click);
 
-            // Ajout du bouton à la fenêtre
+            label1 = new Label
+            {
+                Location = new System.Drawing.Point(0, 50), // Position dans la fenêtre
+                Size = new System.Drawing.Size(200, 30), // Taille
+                Text = "Entrez la station de départ et d'arrivée :",
+            };
+
+            txtEditStart = new TextBox
+            {
+                Location = new System.Drawing.Point(0, 80), // Position dans la fenêtre
+                Size = new System.Drawing.Size(200, 30), // Taille
+            };
+
+            txtEditEnd = new TextBox
+            {
+                Location = new System.Drawing.Point(0, 110), // Position dans la fenêtre
+                Size = new System.Drawing.Size(200, 30), // Taille
+            };
+
+
+            this.Controls.Add(txtEditStart);
+            this.Controls.Add(txtEditEnd);
+            this.Controls.Add(label1);
             this.Controls.Add(myButton);
 
             if (typeof(T) == typeof(Station))
@@ -62,10 +88,30 @@ namespace Liv_In_Paris
 
         private void MyButton_Click(object sender, EventArgs e)
         {
+            
+            Noeud<T> startNode = FindStationByName(txtEditStart.Text);
+            Noeud<T> endNode = FindStationByName(txtEditEnd.Text);
+
+            if ((startNode != null) &&(endNode != null)){
+
+            }
+
             using (Graphics g = this.CreateGraphics())
             {
                 g.Clear(SystemColors.Control); // Efface tout en mettant un fond blanc
             }
+        }
+
+        private Noeud<T> FindStationByName(string name)
+        {
+            foreach (var node in graphe.ListNoeud)
+            {
+                if (node.Value is Station station && station.toString() == name)
+                {
+                    return node;
+                }
+            }
+            return null;
         }
 
         private void positionMetro()
@@ -91,8 +137,6 @@ namespace Liv_In_Paris
                     maxLat = Math.Max(maxLat, station.Latitude);
                 }
             }
-
-            // Calculer les positions des nœuds
 
             for (int i = 0; i < nodeCount; i++)
             {

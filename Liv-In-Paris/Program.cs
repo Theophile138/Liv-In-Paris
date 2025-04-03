@@ -12,23 +12,31 @@ namespace Liv_In_Paris
         static void Main(string[] args) {
             AllocConsole(); // Ouvre la console
 
-            Graphe<int> myGraphe = Fichier<int>.LoadGraphTxt("grapheSimple.Txt");
+
+            // Partie pour load le metro
+            //----------------------------------------------------------------------------------------------------------
+            //Graphe<Station> myGraphe = Fichier<Station>.LoadGraphCsv("Arc_Metro.csv");
+            //Station.setStationListeNoeud(myGraphe, "Noeud_Metro.csv");
+            //Application.Run(new InterFaceGraphique<Station>(myGraphe) { Width = 1800, Height = 1000 });
+            //----------------------------------------------------------------------------------------------------------
+
+
+            // Partie pour load un graphe simple
+            //----------------------------------------------------------------------------------------------------------
+            Graphe<int> myGraphe = Fichier<int>.LoadGraphTxt("grapheSimple.txt");
 
             test();
-            //Station.setStationListeNoeud(myGraphe, "Noeud_Metro.csv");
 
-            //myGraphe.AfficherMatriceAdj();
 
-            //int debut = int.Parse(Console.ReadLine());
-            //int[] mat =myGraphe.Djikstra(debut);
             
-            //for (int i = 0; i < mat.Length; i++)
-            //{
-            //    Console.Write(mat[i]+"  ");
-            //}
-            
-            
+
+
             Application.Run(new InterFaceGraphique<int>(myGraphe) { Width = 1800, Height = 1000 });
+            //----------------------------------------------------------------------------------------------------------
+
+
+
+
 
 
         }
@@ -69,8 +77,12 @@ namespace Liv_In_Paris
                             Console.WriteLine("Choix invalide.");
                             continue;
                     }
-
+                if (chemin.Count == 1&&debut!=fin) { Console.WriteLine(int.MinValue); }
+                else if (fin == debut) { Console.WriteLine("Noeud de depart egal au noeud d'arrivé"); }
+                else
+                {
                     Console.WriteLine("Chemin le plus court : " + string.Join(" -> ", chemin));
+                }
                 }
         }
 
