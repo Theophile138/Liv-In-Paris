@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using Liv_In_Paris;
+using System.Runtime.InteropServices;
 
 namespace Liv_In_Paris
 {
@@ -10,9 +11,10 @@ namespace Liv_In_Paris
         [STAThread]
         static void Main(string[] args) {
             AllocConsole(); // Ouvre la console
-            
 
-            Graphe<int> myGraphe = Fichier<int>.LoadGraphCsv("grapheSimple");
+            Graphe<int> myGraphe = Fichier<int>.LoadGraphTxt("grapheSimple.Txt");
+
+            test();
             //Station.setStationListeNoeud(myGraphe, "Noeud_Metro.csv");
 
             //myGraphe.AfficherMatriceAdj();
@@ -30,6 +32,52 @@ namespace Liv_In_Paris
 
 
         }
+
+        public static void test() {
+
+
+
+            Console.Write("Fichier à charger (grapheSimple ou metro) : ");
+            string fichier = Console.ReadLine();
+            Graphe<int> graphe = Fichier<int>.LoadGraphTxt("grapheSimple.Txt");
+
+            while (true)
+                {
+                    Console.WriteLine("Choisissez un algorithme :\n1 - Dijkstra\n2 - Bellman-Ford\n3 - Floyd-Warshall\nQ - Quitter");
+                    string choix = Console.ReadLine();
+                    if (choix.ToLower() == "q") break;
+
+                    Console.Write("Entrez le nœud de départ : ");
+                    int debut = int.Parse(Console.ReadLine());
+                    Console.Write("Entrez le nœud de fin : ");
+                    int fin = int.Parse(Console.ReadLine());
+
+                    List<int> chemin = null;
+
+                    switch (choix)
+                    {
+                        case "1":
+                            chemin = graphe.Djikstra(debut, fin);
+                            break;
+                        case "2":
+                            chemin = Graphe<int>.BellmanFord(graphe.MatriceAdj(), debut, fin);
+                            break;
+                        case "3":
+                            chemin = Graphe<int>.FloydWarshall(graphe.MatriceAdj(), debut, fin);
+                            break;
+                        default:
+                            Console.WriteLine("Choix invalide.");
+                            continue;
+                    }
+
+                    Console.WriteLine("Chemin le plus court : " + string.Join(" -> ", chemin));
+                }
+        }
+
+       
+    
+
+
         static void annexe(string[] args)
         {
             AllocConsole(); // Ouvre la console

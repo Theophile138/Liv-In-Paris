@@ -46,67 +46,99 @@ namespace Liv_In_Paris
 
         }
 
-        public int[] Djikstra(int debut)
-        {
-            
-            int[,] matadj = MatriceAdj();
-            bool[] ouvert = new bool[matadj.GetLength(0)];
-            for (int i = 0; i < matadj.GetLength(0); i++)
-            {
-                ouvert[i] = true;
-            }
-            
-            int[] Djikstra = new int[ matadj.GetLength(0)];
-            for (int i = 0; i < matadj.GetLength(0); i++) {
-                Djikstra[i]=int.MaxValue;
-            }
-            Djikstra[debut] = 0;
-           
-            int numNoeud = debut;
-            bool ok = true;
-            int test = 8;
-            while (numNoeud!=-1) {
-                ok = false;
-                for (int i = 0; i < matadj.GetLength(0); i++) { if (ouvert[i] == true) { ok = true; } }
-                Iteration( Djikstra, numNoeud, matadj);
-                numNoeud=TrouverPlusPetiteValeur(Djikstra, ouvert);
-                test--;
-            }
-            return Djikstra;
-        }
-        public static int TrouverPlusPetiteValeur(int[] Djikstra, bool[] ouvert)
-        {
-            int min = int.MaxValue;
-            int noeud = -1;
 
-            for (int i = 0; i < Djikstra.Length; i++)
-            {
-                if (ouvert[i] == true && Djikstra[i] < min)
-                {
-                    min = Djikstra[i];
-                    noeud = i;
-                }
-            }
-            if (noeud > -1) { 
-            ouvert[noeud] = false; }
-            return noeud;
+        public double distanee(double lat1, double lat2, double long1, double long2) { 
+            double distance = 2*6371*Math.Asin(Math.Sqrt(Math.Pow(Math.Sin((lat1 - lat2) / 2), 2) + Math.Cos(lat1) * Math.Cos(lat2) * Math.Pow(Math.Sin((long1 - long2) / 2), 2)));
+            return distance;
         }
-        public void Iteration(int[] distances, int numNoeud, int[,] matadj)
-        {
-            int n = distances.Length;
 
-            for (int i = 0; i < n; i++)
+
+
+
+       public List<int> Djikstra(int debut, int fin)
+{
+    int[,] matadj = MatriceAdj();
+    bool[] ouvert = new bool[matadj.GetLength(0)];
+    int[] predecesseur = new int[matadj.GetLength(0)];
+    for (int i = 0; i < matadj.GetLength(0); i++)
+    {
+        ouvert[i] = true;
+        predecesseur[i] = -1;
+    }
+    
+    int[] Djikstra = new int[matadj.GetLength(0)];
+    for (int i = 0; i < matadj.GetLength(0); i++) {
+        Djikstra[i] = int.MaxValue;
+    }
+    Djikstra[debut] = 0;
+   
+    int numNoeud = debut;
+    
+    while (numNoeud != -1)
+    {
+        Iteration(Djikstra, predecesseur, numNoeud, matadj);
+        numNoeud = TrouverPlusPetiteValeur(Djikstra, ouvert);
+    }
+    
+    // Construire le chemin le plus court
+    List<int> chemin = ConstruireChemin(predecesseur, fin);
+    return chemin;
+}
+
+public static int TrouverPlusPetiteValeur(int[] Djikstra, bool[] ouvert)
+{
+    int min = int.MaxValue;
+    int noeud = -1;
+
+    for (int i = 0; i < Djikstra.Length; i++)
+    {
+        if (ouvert[i] && Djikstra[i] < min)
+        {
+            min = Djikstra[i];
+            noeud = i;
+        }
+    }
+    if (noeud > -1)
+    { 
+        ouvert[noeud] = false; 
+    }
+    return noeud;
+}
+
+public void Iteration(int[] distances, int[] predecesseur, int numNoeud, int[,] matadj)
+{
+    int n = distances.Length;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (matadj[numNoeud, i] != 0) // Si une arête existe
+        {
+            int nouvelleDistance = distances[numNoeud] + matadj[numNoeud, i];
+            if (nouvelleDistance < distances[i])
             {
-                if (matadj[numNoeud, i] != 0) // Si une arête existe
-                {
-                    int nouvelleDistance = distances[numNoeud] + matadj[numNoeud, i];
-                    if (nouvelleDistance < distances[i])
-                    {
-                        distances[i] = nouvelleDistance;
-                    }
-                }
+                distances[i] = nouvelleDistance;
+                predecesseur[i] = numNoeud;
             }
         }
+    }
+}
+
+public void AfficherChemin(List<int> chemin)
+{
+    Console.WriteLine("Chemin le plus court : " + string.Join(" -> ", chemin));
+}
+
+public List<int> ConstruireChemin(int[] predecesseur, int fin)
+{
+    List<int> chemin = new List<int>();
+    for (int at = fin; at != -1; at = predecesseur[at])
+    {
+        chemin.Add(at);
+    }
+    chemin.Reverse();
+    return chemin;
+}
+
 
         /// <summary>
         /// Affiche la matrice d'adjacence du graphe
@@ -148,61 +180,40 @@ namespace Liv_In_Paris
 
 
 
-        public static List<int> BellmanFord(int[,] matadj, int start, int end)
+        public static List<int> BellmanFord(int[,] adj, int debut, int fin)
         {
-            int noeud = matadj.GetLength(0);
-            int[] distance = new int[noeud];
-            int[] predecessor = new int[noeud];
-            
-            
-            for (int i = 0; i < noeud; i++)
+            int n = adj.GetLength(0);
+            int[] dist = new int[n];
+            int[] pred = new int[n];
+            for (int i = 0; i < n; i++)
             {
-                distance[i] = int.MaxValue;
-                predecessor[i] = -1;
+                dist[i] = int.MaxValue;
+                pred[i] = -1;
             }
-            distance[start] = 0;
+            dist[debut] = 0;
 
-            // Relaxation des arêtes |V|-1 fois
-            for (int i = 0; i < noeud - 1; i++)
+            for (int i = 0; i < n - 1; i++)
             {
-                for (int u = 0; u < noeud; u++)
+                for (int u = 0; u < n; u++)
                 {
-                    for (int v = 0; v < noeud; v++)
+                    for (int v = 0; v < n; v++)
                     {
-                        if (matadj[u, v] != 0 && distance[u] != int.MaxValue && distance[u] + matadj[u, v] < distance[v])
+                        if (adj[u, v] != 0 && dist[u] != int.MaxValue && dist[u] + adj[u, v] < dist[v])
                         {
-                            distance[v] = distance[u] + matadj[u, v];
-                            predecessor[v] = u;
+                            dist[v] = dist[u] + adj[u, v];
+                            pred[v] = u;
                         }
                     }
                 }
             }
 
-            // Vérification des cycles de poids négatif
-            for (int u = 0; u < noeud; u++)
-            {
-                for (int v = 0; v < noeud; v++)
-                {
-                    if (matadj[u, v] != 0 && distance[u] != int.MaxValue && distance[u] + matadj[u, v] < distance[v])
-                    {
-                        throw new Exception("Le graphe contient un cycle de poids négatif");
-                    }
-                }
-            }
-
-            
             List<int> chemin = new List<int>();
-            for (int at = end; at != -1; at = predecessor[at])
+            for (int at = fin; at != -1; at = pred[at])
             {
                 chemin.Insert(0, at);
             }
-
-            if (chemin[0] != start) return new List<int>(); 
             return chemin;
         }
-
-
-
 
 
 
@@ -505,16 +516,14 @@ namespace Liv_In_Paris
         {
             if (next[start, end] == -1) { return new List<int>(); }
 
-            List<int> path = new List<int> { start };
+            List<int> listesommets = new List<int> { start };
             while (start != end)
             {
                 start = next[start, end];
-                path.Add(start);
+                listesommets.Add(start);
             }
-            return path;
+            return listesommets;
         }
-
-
 
         /// <summary>
         /// Retourne true si le graphe est orienté
