@@ -146,6 +146,68 @@ namespace Liv_In_Paris
             return myNoeud;
         }
 
+
+
+        public static List<int> BellmanFord(int[,] matadj, int start, int end)
+        {
+            int noeud = matadj.GetLength(0);
+            int[] distance = new int[noeud];
+            int[] predecessor = new int[noeud];
+            
+            
+            for (int i = 0; i < noeud; i++)
+            {
+                distance[i] = int.MaxValue;
+                predecessor[i] = -1;
+            }
+            distance[start] = 0;
+
+            // Relaxation des arêtes |V|-1 fois
+            for (int i = 0; i < noeud - 1; i++)
+            {
+                for (int u = 0; u < noeud; u++)
+                {
+                    for (int v = 0; v < noeud; v++)
+                    {
+                        if (matadj[u, v] != 0 && distance[u] != int.MaxValue && distance[u] + matadj[u, v] < distance[v])
+                        {
+                            distance[v] = distance[u] + matadj[u, v];
+                            predecessor[v] = u;
+                        }
+                    }
+                }
+            }
+
+            // Vérification des cycles de poids négatif
+            for (int u = 0; u < noeud; u++)
+            {
+                for (int v = 0; v < noeud; v++)
+                {
+                    if (matadj[u, v] != 0 && distance[u] != int.MaxValue && distance[u] + matadj[u, v] < distance[v])
+                    {
+                        throw new Exception("Le graphe contient un cycle de poids négatif");
+                    }
+                }
+            }
+
+            
+            List<int> chemin = new List<int>();
+            for (int at = end; at != -1; at = predecessor[at])
+            {
+                chemin.Insert(0, at);
+            }
+
+            if (chemin[0] != start) return new List<int>(); 
+            return chemin;
+        }
+
+
+
+
+
+
+
+
         /// <summary>
         /// Retourne vrai si le lien existe entre les deux noeuds
         /// </summary>
@@ -397,6 +459,62 @@ namespace Liv_In_Paris
                 return false; 
             }
         }
+
+
+        public static List<int> FloydWarshall(int[,] matadj, int debut, int fin)
+        {   int taille=matadj.GetLength(0);
+            int[,] dist = new int[taille, taille];
+            int[,] chemin = new int[taille, taille];
+
+            for (int i = 0; i < taille; i++)
+            {
+                for (int j = 0; j < taille; j++)
+                {
+                    dist[i, j] = matadj[i, j];
+                    if (matadj[i, j] != int.MaxValue && i != j)
+                    {
+                        chemin[i, j] = j;
+                    }
+                    else
+                    {
+                        chemin[i, j] = -1;
+                    }
+                }
+
+            }
+
+            for (int k = 0; k < taille; k++)
+            {
+                for (int i = 0; i < taille; i++)
+                {   
+                    for (int j = 0; j < taille; j++)
+                    {
+                        if (dist[i, k] != int.MaxValue && dist[k, j] != int.MaxValue && dist[i, k] + dist[k, j] < dist[i, j])
+                        {
+                            dist[i, j] = dist[i, k] + dist[k, j];
+                            chemin[i, j] = chemin[i, k];
+                        }
+                    }
+                }
+            }
+
+            return ConstruireListeAdj(chemin, debut, fin);
+        }
+
+        private static List<int> ConstruireListeAdj(int[,] next, int start, int end)
+        {
+            if (next[start, end] == -1) { return new List<int>(); }
+
+            List<int> path = new List<int> { start };
+            while (start != end)
+            {
+                start = next[start, end];
+                path.Add(start);
+            }
+            return path;
+        }
+
+
 
         /// <summary>
         /// Retourne true si le graphe est orienté
