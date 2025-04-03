@@ -21,6 +21,8 @@ namespace Liv_In_Paris
 
         private Button button1;
 
+        private int[] way;
+
 
         /// <summary>
         /// Constructeur de la clase interface graphique, demande un graphe
