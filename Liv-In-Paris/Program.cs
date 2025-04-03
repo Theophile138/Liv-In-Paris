@@ -10,23 +10,39 @@ namespace Liv_In_Paris
         [STAThread]
         static void Main(string[] args) {
             AllocConsole(); // Ouvre la console
-            
 
-            Graphe<int> myGraphe = Fichier<int>.LoadGraphCsv("grapheSimple");
+
+            // Partie pour load le metro
+            //----------------------------------------------------------------------------------------------------------
+            //Graphe<Station> myGraphe = Fichier<Station>.LoadGraphCsv("Arc_Metro.csv");
             //Station.setStationListeNoeud(myGraphe, "Noeud_Metro.csv");
+            //Application.Run(new InterFaceGraphique<Station>(myGraphe) { Width = 1800, Height = 1000 });
+            //----------------------------------------------------------------------------------------------------------
 
-            //myGraphe.AfficherMatriceAdj();
 
-            //int debut = int.Parse(Console.ReadLine());
-            //int[] mat =myGraphe.Djikstra(debut);
-            
-            //for (int i = 0; i < mat.Length; i++)
-            //{
-            //    Console.Write(mat[i]+"  ");
-            //}
-            
-            
+            // Partie pour load un graphe simple
+            //----------------------------------------------------------------------------------------------------------
+            Graphe<int> myGraphe = Fichier<int>.LoadGraphTxt("grapheSimple.txt");
+
+
+            myGraphe.AfficherMatriceAdj();
+
+            int debut = int.Parse(Console.ReadLine()) - 1;
+            int[] mat = myGraphe.Djikstra(debut);
+
+            for (int i = 0; i < mat.Length; i++)
+            {
+                Console.Write((mat[i]+1) + "  ");
+            }
+
+
+
             Application.Run(new InterFaceGraphique<int>(myGraphe) { Width = 1800, Height = 1000 });
+            //----------------------------------------------------------------------------------------------------------
+
+
+
+
 
 
         }

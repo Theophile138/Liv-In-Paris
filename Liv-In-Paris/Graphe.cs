@@ -46,11 +46,25 @@ namespace Liv_In_Paris
 
         }
 
+        public void addLien(Noeud<T> noeud1 , Noeud<T> noeud2 , int direction , int poid)
+        {
+            Lien<T>[] newListLien = new Lien<T>[ListLien.Length + 1];
+
+            for (int i = 0; i < ListLien.Length; i++)
+            {
+                newListLien[i] = ListLien[i];
+            }
+            newListLien[ListLien.Length] = new Lien<T>(noeud1 , noeud2 , direction , poid);
+            ListLien = newListLien;
+        }
+
+        
         public int[] Djikstra(int debut)
         {
             
             int[,] matadj = MatriceAdj();
             bool[] ouvert = new bool[matadj.GetLength(0)];
+            
             for (int i = 0; i < matadj.GetLength(0); i++)
             {
                 ouvert[i] = true;
@@ -60,6 +74,7 @@ namespace Liv_In_Paris
             for (int i = 0; i < matadj.GetLength(0); i++) {
                 Djikstra[i]=int.MaxValue;
             }
+            
             Djikstra[debut] = 0;
            
             int numNoeud = debut;
@@ -74,6 +89,8 @@ namespace Liv_In_Paris
             }
             return Djikstra;
         }
+        
+
         public static int TrouverPlusPetiteValeur(int[] Djikstra, bool[] ouvert)
         {
             int min = int.MaxValue;
@@ -202,7 +219,7 @@ namespace Liv_In_Paris
         }
 
 
-
+       
 
 
 
