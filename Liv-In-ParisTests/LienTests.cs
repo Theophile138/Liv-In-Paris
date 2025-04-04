@@ -15,31 +15,31 @@ namespace Liv_In_Paris.Tests
         [TestMethod()]
         public void LienTest()
         {
-            Noeud noeud1 = new Noeud(1);
-            Noeud noeud2 = new Noeud(2);
+            Noeud<int> noeud1 = new Noeud<int>(1);
+            Noeud<int> noeud2 = new Noeud<int>(2);
 
-            Lien lien1 = new Lien(noeud1, noeud2, 0, 0);
+            var lien1 = new Lien<int>(noeud1, noeud2, 0, 0);
             Assert.IsTrue(lien1 != null);
         }
 
         [TestMethod()]
         public void ContientTest()
         {
-            Noeud noeud1 = new Noeud(1);
-            Noeud noeud2 = new Noeud(2);
+            Noeud<int> noeud1 = new Noeud<int>(1);
+            Noeud<int> noeud2 = new Noeud<int>(2);
 
-            Lien lien1 = new Lien(noeud1, noeud2, 0, 0);
-            Assert.IsTrue(lien1.Contient(noeud1,noeud2)== true);
+            var lien1 = new Lien<int>(noeud1, noeud2, 0, 0);
+            Assert.IsTrue(lien1.Contient(noeud1, noeud2) == true);
         }
 
         [TestMethod()]
         public void BonneDirectionTest()
         {
-            Noeud noeud1 = new Noeud(1);
-            Noeud noeud2 = new Noeud(2);
+            Noeud<int> noeud1 = new Noeud<int>(1);
+            Noeud<int> noeud2 = new Noeud<int>(2);
 
-            Lien lien1 = new Lien(noeud1, noeud2, 0, 0);
-            Assert.IsTrue(lien1.BonneDirection(noeud1,noeud2) == true);
+            var lien1 = new Lien<int>(noeud1, noeud2, 0, 0);
+            Assert.IsTrue(lien1.BonneDirection(noeud1, noeud2) == true);
         }
     }
 }

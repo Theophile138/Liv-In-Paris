@@ -185,6 +185,9 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
             }
         }
 
+
+
+
         /// <summary>
         /// Retourne le noeud correspondant au numero
         /// </summary>
@@ -546,7 +549,7 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
             }
 
             List<int> chemin = new List<int>();
-            if (next[debut, fin] == -1) return chemin; // Pas de chemin
+            if (next[debut, fin] == -1) return chemin; 
 
             int actuel = debut;
             while (actuel != fin)
