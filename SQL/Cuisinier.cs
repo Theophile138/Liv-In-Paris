@@ -149,6 +149,7 @@ namespace SQL
             using (var cmd = new MySqlCommand(query, conn))
             {
                 cmd.Parameters.AddWithValue("@id_cuisinier", id_cuisinier);
+                //test
 
                 using (var reader = cmd.ExecuteReader())
                 {
