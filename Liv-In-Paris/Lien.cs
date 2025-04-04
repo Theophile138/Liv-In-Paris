@@ -57,7 +57,7 @@ namespace Liv_In_Paris
         /// </summary>
         /// <param name="noeud1_">premier noeud</param>
         /// <param name="noeud2_">deuxieme noeud</param>
-        /// <returns></returns>
+        /// <returns>si le lien est dans la bonne direction</returns>
         public bool BonneDirection(Noeud<T>  noeud1_, Noeud<T> noeud2_)
         {
             bool result = false;

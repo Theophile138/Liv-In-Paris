@@ -216,23 +216,6 @@ namespace Liv_In_Paris
                 ListNoeud[i] = new Noeud<T>(i + 1);
             }
 
-            //int numberLien = int.Parse(grapheString[0][2]);
-
-
-            /*
-            Lien[] ListLien = new Lien[numberLien];
-
-            int index = 0;
-
-            for (int i = 1; i < grapheString.Length; i++)
-            {
-                int Noeud1 = int.Parse(grapheString[i][0]);
-                int Noeud2 = int.Parse(grapheString[i][1]);
-
-                ListLien[index] = new Lien(ListNoeud[Noeud1 - 1], ListNoeud[Noeud2 - 1], 0, 0);
-                index++;
-            }
-            */
 
             List<Lien<T>> liens = new List<Lien<T>>();
 
@@ -248,8 +231,29 @@ namespace Liv_In_Paris
                 if (int.TryParse(grapheString[i][positionStationSuiv].ToString(), out int value2))
                 {
                     int Noeud2 = value2; // Plus besoin de refaire un int.Parse
-                    liens.Add(new Lien<T>(ListNoeud[Noeud1 - 1], ListNoeud[Noeud2 - 1], 1, positionTempsEntreStation));
+                    liens.Add(new Lien<T>(ListNoeud[Noeud1 - 1], ListNoeud[Noeud2 - 1], 1, int.Parse(grapheString[i][positionTempsEntreStation])));
                 }
+            }
+
+            int Temps_de_Changement = 4;
+
+            for (int i = 0; i < grapheString.Length; i++)
+            {
+                for (int j = 0; j < grapheString.Length; j++)
+                {
+                    if ((grapheString[i][1] == grapheString[j][1])&& (j != i))
+                    {
+
+                        int Noeud1 = int.Parse(grapheString[i][0]);
+                        int Noeud2 = int.Parse(grapheString[j][0]);
+
+                        liens.Add(new Lien<T>(ListNoeud[Noeud1 - 1], ListNoeud[Noeud2 - 1], 0, int.Parse(grapheString[i][Temps_de_Changement])));
+                    }
+
+                }
+
+                    
+                
             }
 
             Lien<T>[] ListLien = new Lien<T>[liens.Count];

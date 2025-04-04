@@ -46,82 +46,125 @@ namespace Liv_In_Paris
 
         }
 
-        public List<int> Djikstra(int debut, int fin)
-        {
-            debut--;
-            fin--;
-            int[,] matadj = MatriceAdj();
-            bool[] ouvert = new bool[matadj.GetLength(0)];
-            int[] predecesseur = new int[matadj.GetLength(0)];
-            for (int i = 0; i < matadj.GetLength(0); i++)
-            {
-                ouvert[i] = true;
-                predecesseur[i] = -1;
-            }
-
-            int[] Djikstra = new int[matadj.GetLength(0)];
-            for (int i = 0; i < matadj.GetLength(0); i++)
-            {
-                Djikstra[i] = int.MaxValue;
-            }
-            Djikstra[debut] = 0;
-
-            int numNoeud = debut;
-
-            while (numNoeud != -1)
-            {
-                Iteration(Djikstra, predecesseur, numNoeud, matadj);
-                numNoeud = TrouverPlusPetiteValeur(Djikstra, ouvert);
-            }
-
-            // Construire le chemin le plus court
-            List<int> chemin = new List<int>();
-            for (int at = fin; at != -1; at = predecesseur[at])
-            {
-                chemin.Add(at+1);
-            }
-            chemin.Reverse();
-
-            return chemin;
+        /// <summary>
+        /// permet de calculer la distance entre deux points donnes 
+        /// </summary>
+        /// <param name="lat1">latitude premier point en radian</param>
+        /// <param name="lat2">latitude deuxieme point en radians </param>
+        /// <param name="long1">longitude premier point en radian</param>
+        /// <param name="long2">longitude deuxieme point en radian</param>
+        /// <returns></returns>
+        public double distance(double lat1, double lat2, double long1, double long2) { 
+            double distance = 2*6371*Math.Asin(Math.Sqrt(Math.Pow(Math.Sin((lat1 - lat2) / 2), 2) + Math.Cos(lat1) * Math.Cos(lat2) * Math.Pow(Math.Sin((long1 - long2) / 2), 2)));
+            return distance;
         }
 
-        public static int TrouverPlusPetiteValeur(int[] Djikstra, bool[] ouvert)
+
+
+        /// <summary>
+        /// algo de djikstra
+        /// </summary>
+        /// <param name="debut">numero noeud de debut</param>
+        /// <param name="fin">numero  noeud de fin  </param>
+        /// <returns>liste des numeros de tous les points a parcourir pour le chemin le plus court entre les deux points</returns>
+       public List<int> Djikstra(int debut, int fin)
+{
+    int[,] matadj = MatriceAdj();
+    bool[] ouvert = new bool[matadj.GetLength(0)];
+    int[] predecesseur = new int[matadj.GetLength(0)];
+    for (int i = 0; i < matadj.GetLength(0); i++)
+    {
+        ouvert[i] = true;
+        predecesseur[i] = -1;
+    }
+    
+    int[] Djikstra = new int[matadj.GetLength(0)];
+    for (int i = 0; i < matadj.GetLength(0); i++) {
+        Djikstra[i] = int.MaxValue;
+    }
+    Djikstra[debut] = 0;
+   
+    int numNoeud = debut;
+    
+    while (numNoeud != -1)
+    {
+        Iteration(Djikstra, predecesseur, numNoeud, matadj);
+        numNoeud = TrouverPlusPetiteValeur(Djikstra, ouvert);
+    }
+    
+    List<int> chemin = ConstruireChemin(predecesseur, fin);
+    return chemin;
+}
+
+
+        /// <summary>
+        /// permet de trouver la plus petite valeur du tableau
+        /// </summary>
+        /// <param name="Djikstra">tableau des resultats</param>
+        /// <param name="ouvert">tableau permettant de savoir si les noeuds sont ouverts</param>
+        /// <returns></returns>
+public static int TrouverPlusPetiteValeur(int[] Djikstra, bool[] ouvert)
+{
+    int min = int.MaxValue;
+    int noeud = -1;
+
+    for (int i = 0; i < Djikstra.Length; i++)
+    {
+        if (ouvert[i] && Djikstra[i] < min)
         {
-            int min = int.MaxValue;
-            int noeud = -1;
-
-            for (int i = 0; i < Djikstra.Length; i++)
-            {
-                if (ouvert[i] && Djikstra[i] < min)
-                {
-                    min = Djikstra[i];
-                    noeud = i;
-                }
-            }
-            if (noeud > -1)
-            {
-                ouvert[noeud] = false;
-            }
-            return noeud;
+            min = Djikstra[i];
+            noeud = i;
         }
+    }
+    if (noeud > -1)
+    { 
+        ouvert[noeud] = false; 
+    }
+    return noeud;
+}
 
-        public void Iteration(int[] distances, int[] predecesseur, int numNoeud, int[,] matadj)
+        /// <summary>
+        /// permet de faire une iteration de l'algorithme de djikstra
+        /// </summary>
+        /// <param name="distances">tableau des distance a tous les points</param>
+        /// <param name="predecesseur">tableau des predecesseurs</param>
+        /// <param name="numNoeud">numero du noeud a partir duquel on fait l'itération</param>
+        /// <param name="matadj">matrice d'adjacence du graphe que l'on traite</param>
+public void Iteration(int[] distances, int[] predecesseur, int numNoeud, int[,] matadj)
+{
+    int n = distances.Length;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (matadj[numNoeud, i] != 0) 
         {
-            int n = distances.Length;
-
-            for (int i = 0; i < n; i++)
+            int nouvelleDistance = distances[numNoeud] + matadj[numNoeud, i];
+            if (nouvelleDistance < distances[i])
             {
-                if (matadj[numNoeud, i] != 0) // Si une arête existe
-                {
-                    int nouvelleDistance = distances[numNoeud] + matadj[numNoeud, i];
-                    if (nouvelleDistance < distances[i])
-                    {
-                        distances[i] = nouvelleDistance;
-                        predecesseur[i] = numNoeud;
-                    }
-                }
+                distances[i] = nouvelleDistance;
+                predecesseur[i] = numNoeud;
             }
         }
+    }
+}
+
+
+/// <summary>
+/// reconstruit une liste a partir d'un tableau
+/// </summary>
+/// <param name="predecesseur">tableau des predecesseurs</param>
+/// <param name="fin">numero du noeud de fin</param>
+/// <returns>liste des predecesseurs</returns>
+public List<int> ConstruireChemin(int[] predecesseur, int fin)
+{
+    List<int> chemin = new List<int>();
+    for (int at = fin; at != -1; at = predecesseur[at])
+    {
+        chemin.Add(at);
+    }
+    chemin.Reverse();
+    return chemin;
+}
 
 
         /// <summary>
@@ -162,6 +205,53 @@ namespace Liv_In_Paris
             return myNoeud;
         }
 
+
+        /// <summary>
+        /// algo de bellmann ford
+        /// </summary>
+        /// <param name="adj">matrice d'adjacence du graphe</param>
+        /// <param name="debut">numero noeud de debut</param>
+        /// <param name="fin">numero noeud de fin</param>
+        /// <returns>liste des numeros de tous les points a parcourir pour le chemin le plus court entre les deux points</returns>
+        public static List<int> BellmanFord(int[,] adj, int debut, int fin)
+        {
+            int n = adj.GetLength(0);
+            int[] dist = new int[n];
+            int[] pred = new int[n];
+            for (int i = 0; i < n; i++)
+            {
+                dist[i] = int.MaxValue;
+                pred[i] = -1;
+            }
+            dist[debut] = 0;
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                for (int u = 0; u < n; u++)
+                {
+                    for (int v = 0; v < n; v++)
+                    {
+                        if (adj[u, v] != 0 && dist[u] != int.MaxValue && dist[u] + adj[u, v] < dist[v])
+                        {
+                            dist[v] = dist[u] + adj[u, v];
+                            pred[v] = u;
+                        }
+                    }
+                }
+            }
+
+            List<int> chemin = new List<int>();
+            for (int at = fin; at != -1; at = pred[at])
+            {
+                chemin.Insert(0, at);
+            }
+            return chemin;
+        }
+
+
+       
+
+
         /// <summary>
         /// Retourne vrai si le lien existe entre les deux noeuds
         /// </summary>
@@ -187,7 +277,7 @@ namespace Liv_In_Paris
         /// <summary>
         /// Retourne le nombre de noeud du graphe
         /// </summary>
-        /// <returns></returns>
+        /// <returns>nombre de noeud du graphe</returns>
         public int GetNbrNoeud()
         {
             return ListNoeud.Length;
@@ -240,7 +330,7 @@ namespace Liv_In_Paris
         /// <summary>
         /// Retourne vrai si le graphe est connexe
         /// </summary>
-        /// <returns></returns>
+        /// <returns>booleen selon connexite du graphe</returns>
         public bool Connexe() {
             Stack<Noeud<T>> pile = ParcoursProfondeur(ListNoeud[0],false);
             int nbrnoeud = GetNbrNoeud();
@@ -413,6 +503,63 @@ namespace Liv_In_Paris
                 return false; 
             }
         }
+
+        /// <summary>
+        /// algorithme de floydWarhall
+        /// </summary>
+        /// <param name="debut">numero noeud de debut</param>
+        /// <param name="fin">numero noeud de fin</param>
+        /// <returns>liste des numeros de tous les points a parcourir pour le chemin le plus court entre les deux points</returns>
+        public List<int> FloydWarshall(int debut, int fin)
+        {
+            int[,] matadj = MatriceAdj();
+            int n = matadj.GetLength(0);
+            int[,] dist = new int[n, n];
+            int[,] next = new int[n, n];
+
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    if (i == j) dist[i, j] = 0;
+                    else if (matadj[i, j] != 0) dist[i, j] = matadj[i, j];
+                    else dist[i, j] = int.MaxValue;
+
+                    if (matadj[i, j] != 0) next[i, j] = j;
+                    else next[i, j] = -1;
+                }
+            }
+
+            for (int k = 0; k < n; k++)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        if (dist[i, k] != int.MaxValue && dist[k, j] != int.MaxValue && dist[i, k] + dist[k, j] < dist[i, j])
+                        {
+                            dist[i, j] = dist[i, k] + dist[k, j];
+                            next[i, j] = next[i, k];
+                        }
+                    }
+                }
+            }
+
+            List<int> chemin = new List<int>();
+            if (next[debut, fin] == -1) return chemin; // Pas de chemin
+
+            int actuel = debut;
+            while (actuel != fin)
+            {
+                chemin.Add(actuel);
+                actuel = next[actuel, fin];
+            }
+            chemin.Add(fin);
+
+            return chemin;
+        }
+
+        
 
         /// <summary>
         /// Retourne true si le graphe est orienté
