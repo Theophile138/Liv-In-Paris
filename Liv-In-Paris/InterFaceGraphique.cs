@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Drawing.Printing;
+using System.Diagnostics;
 
 namespace Liv_In_Paris
 {
@@ -19,14 +20,6 @@ namespace Liv_In_Paris
         private Dictionary<int, Point> positions = new Dictionary<int, Point>();
 
         private int nodeRadius = 10;
-
-        private Button button1;
-        private TextBox txtEditStart;
-        private TextBox txtEditEnd;
-        private Label label1;
-
-        private int[] way;
-
 
         /// <summary>
         /// Constructeur de la clase interface graphique, demande un graphe
@@ -40,40 +33,6 @@ namespace Liv_In_Paris
             this.Text = "Visualisation du Graphe";
             this.DoubleBuffered = true; // Réduit le scintillement
 
-            // Création du bouton
-            Button myButton = new Button();
-            myButton.Text = "Recherche du chemin";
-            myButton.Size = new Size(200, 50);
-            myButton.Location = new Point(0, 0); // Position dans la fenêtre
-
-            // Ajout d'un événement au clic
-            myButton.Click += new EventHandler(MyButton_Click);
-
-            label1 = new Label
-            {
-                Location = new System.Drawing.Point(0, 50), // Position dans la fenêtre
-                Size = new System.Drawing.Size(200, 30), // Taille
-                Text = "Entrez la station de départ et d'arrivée :",
-            };
-
-            txtEditStart = new TextBox
-            {
-                Location = new System.Drawing.Point(0, 80), // Position dans la fenêtre
-                Size = new System.Drawing.Size(200, 30), // Taille
-            };
-
-            txtEditEnd = new TextBox
-            {
-                Location = new System.Drawing.Point(0, 110), // Position dans la fenêtre
-                Size = new System.Drawing.Size(200, 30), // Taille
-            };
-
-
-            this.Controls.Add(txtEditStart);
-            this.Controls.Add(txtEditEnd);
-            this.Controls.Add(label1);
-            this.Controls.Add(myButton);
-
             if (typeof(T) == typeof(Station))
             {
                 positionMetro();
@@ -84,22 +43,6 @@ namespace Liv_In_Paris
                 PositionNodesCircular();  // Positionner les nœuds sans chevauchement
             }
             this.Paint += new PaintEventHandler(DrawGraph);
-        }
-
-        private void MyButton_Click(object sender, EventArgs e)
-        {
-            
-            Noeud<T> startNode = FindStationByName(txtEditStart.Text);
-            Noeud<T> endNode = FindStationByName(txtEditEnd.Text);
-
-            if ((startNode != null) &&(endNode != null)){
-
-            }
-
-            using (Graphics g = this.CreateGraphics())
-            {
-                g.Clear(SystemColors.Control); // Efface tout en mettant un fond blanc
-            }
         }
 
         private Noeud<T> FindStationByName(string name)
@@ -204,28 +147,29 @@ namespace Liv_In_Paris
                 {
                     Pen penMetro; // Déclaration du stylo pour la couleur
 
-                    switch (station.Ligne)
-                    {
-                        case "1": penMetro = new Pen(Color.Yellow, 2); break;
-                        case "2": penMetro = new Pen(Color.Blue, 2); break;
-                        case "3": penMetro = new Pen(Color.Olive, 2); break;
-                        case "3bis": penMetro = new Pen(Color.LightGreen, 2); break;
-                        case "4": penMetro = new Pen(Color.Magenta, 2); break;
-                        case "5": penMetro = new Pen(Color.Orange, 2); break;
-                        case "6": penMetro = new Pen(Color.LightGreen, 2); break;
-                        case "7": penMetro = new Pen(Color.Pink, 2); break;
-                        case "7bis": penMetro = new Pen(Color.LightBlue, 2); break;
-                        case "8": penMetro = new Pen(Color.Purple, 2); break;
-                        case "9": penMetro = new Pen(Color.Gold, 2); break;
-                        case "10": penMetro = new Pen(Color.SaddleBrown, 2); break;
-                        case "11": penMetro = new Pen(Color.Brown, 2); break;
-                        case "12": penMetro = new Pen(Color.DarkGreen, 2); break;
-                        case "13": penMetro = new Pen(Color.SkyBlue, 2); break;
-                        case "14": penMetro = new Pen(Color.Indigo, 2); break;
-                        default: penMetro = new Pen(Color.Gray, 2); break; // Par défaut si ligne inconnue
-                    }
-
-                    g.DrawLine(penMetro, p1, p2);
+                        switch (station.Ligne)
+                        {
+                            case "1": penMetro = new Pen(Color.Yellow, 2); break;
+                            case "2": penMetro = new Pen(Color.Blue, 2); break;
+                            case "3": penMetro = new Pen(Color.Olive, 2); break;
+                            case "3bis": penMetro = new Pen(Color.LightGreen, 2); break;
+                            case "4": penMetro = new Pen(Color.Magenta, 2); break;
+                            case "5": penMetro = new Pen(Color.Orange, 2); break;
+                            case "6": penMetro = new Pen(Color.LightGreen, 2); break;
+                            case "7": penMetro = new Pen(Color.Pink, 2); break;
+                            case "7bis": penMetro = new Pen(Color.LightBlue, 2); break;
+                            case "8": penMetro = new Pen(Color.Purple, 2); break;
+                            case "9": penMetro = new Pen(Color.Gold, 2); break;
+                            case "10": penMetro = new Pen(Color.SaddleBrown, 2); break;
+                            case "11": penMetro = new Pen(Color.Brown, 2); break;
+                            case "12": penMetro = new Pen(Color.DarkGreen, 2); break;
+                            case "13": penMetro = new Pen(Color.SkyBlue, 2); break;
+                            case "14": penMetro = new Pen(Color.Indigo, 2); break;
+                            default: penMetro = new Pen(Color.Gray, 2); break; // Par défaut si ligne inconnue
+                        }
+                        g.DrawLine(penMetro, p1, p2);
+                   
+                  
 
                 }
                 else
