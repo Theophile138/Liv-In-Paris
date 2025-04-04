@@ -46,34 +46,45 @@ namespace Liv_In_Paris
 
         }
 
-        public int[] Djikstra(int debut)
+        public List<int> Djikstra(int debut, int fin)
         {
-            
+            debut--;
+            fin--;
             int[,] matadj = MatriceAdj();
             bool[] ouvert = new bool[matadj.GetLength(0)];
+            int[] predecesseur = new int[matadj.GetLength(0)];
             for (int i = 0; i < matadj.GetLength(0); i++)
             {
                 ouvert[i] = true;
+                predecesseur[i] = -1;
             }
-            
-            int[] Djikstra = new int[ matadj.GetLength(0)];
-            for (int i = 0; i < matadj.GetLength(0); i++) {
-                Djikstra[i]=int.MaxValue;
+
+            int[] Djikstra = new int[matadj.GetLength(0)];
+            for (int i = 0; i < matadj.GetLength(0); i++)
+            {
+                Djikstra[i] = int.MaxValue;
             }
             Djikstra[debut] = 0;
-           
+
             int numNoeud = debut;
-            bool ok = true;
-            int test = 8;
-            while (numNoeud!=-1) {
-                ok = false;
-                for (int i = 0; i < matadj.GetLength(0); i++) { if (ouvert[i] == true) { ok = true; } }
-                Iteration( Djikstra, numNoeud, matadj);
-                numNoeud=TrouverPlusPetiteValeur(Djikstra, ouvert);
-                test--;
+
+            while (numNoeud != -1)
+            {
+                Iteration(Djikstra, predecesseur, numNoeud, matadj);
+                numNoeud = TrouverPlusPetiteValeur(Djikstra, ouvert);
             }
-            return Djikstra;
+
+            // Construire le chemin le plus court
+            List<int> chemin = new List<int>();
+            for (int at = fin; at != -1; at = predecesseur[at])
+            {
+                chemin.Add(at+1);
+            }
+            chemin.Reverse();
+
+            return chemin;
         }
+
         public static int TrouverPlusPetiteValeur(int[] Djikstra, bool[] ouvert)
         {
             int min = int.MaxValue;
@@ -81,17 +92,20 @@ namespace Liv_In_Paris
 
             for (int i = 0; i < Djikstra.Length; i++)
             {
-                if (ouvert[i] == true && Djikstra[i] < min)
+                if (ouvert[i] && Djikstra[i] < min)
                 {
                     min = Djikstra[i];
                     noeud = i;
                 }
             }
-            if (noeud > -1) { 
-            ouvert[noeud] = false; }
+            if (noeud > -1)
+            {
+                ouvert[noeud] = false;
+            }
             return noeud;
         }
-        public void Iteration(int[] distances, int numNoeud, int[,] matadj)
+
+        public void Iteration(int[] distances, int[] predecesseur, int numNoeud, int[,] matadj)
         {
             int n = distances.Length;
 
@@ -103,10 +117,12 @@ namespace Liv_In_Paris
                     if (nouvelleDistance < distances[i])
                     {
                         distances[i] = nouvelleDistance;
+                        predecesseur[i] = numNoeud;
                     }
                 }
             }
         }
+
 
         /// <summary>
         /// Affiche la matrice d'adjacence du graphe

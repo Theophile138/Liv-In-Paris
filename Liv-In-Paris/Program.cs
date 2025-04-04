@@ -10,23 +10,29 @@ namespace Liv_In_Paris
         [STAThread]
         static void Main(string[] args) {
             AllocConsole(); // Ouvre la console
-            
 
-            Graphe<Station> myGraphe = Fichier<Station>.LoadGraphCsv("Arc_Metro.csv");
-            Station.setStationListeNoeud(myGraphe, "Noeud_Metro.csv");
 
-            //myGraphe.AfficherMatriceAdj();
+            // Graphe<Station> myGraphe = Fichier<Station>.LoadGraphCsv("Arc_Metro.csv");
+            //Station.setStationListeNoeud(myGraphe, "Noeud_Metro.csv");
+             Graphe<int> myGraphe = Fichier<int>.LoadGraphTxt("grapheSimple.txt");
 
-            //int debut = int.Parse(Console.ReadLine());
-            //int[] mat =myGraphe.Djikstra(debut);
-            
-            //for (int i = 0; i < mat.Length; i++)
-            //{
-            //    Console.Write(mat[i]+"  ");
-            //}
-            
-            
-            Application.Run(new InterFaceGraphique<Station>(myGraphe) { Width = 1800, Height = 1000 });
+            myGraphe.AfficherMatriceAdj();
+
+            int debut = int.Parse(Console.ReadLine());
+            int fin = int.Parse(Console.ReadLine());
+
+            List<int> liste =myGraphe.Djikstra(debut, fin);
+
+
+          
+        
+            Console.WriteLine("Chemin le plus court : " + string.Join(" -> ", liste));
+
+
+            //Graphe<Station> myGraphe = Fichier<Station>.LoadGraphCsv("Arc_Metro.csv");
+            //Station.setStationListeNoeud(myGraphe, "Noeud_Metro.csv");
+
+            Application.Run(new InterFaceGraphique<int>(myGraphe) { Width = 1800, Height = 1000 });
 
 
         }
