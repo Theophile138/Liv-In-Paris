@@ -233,6 +233,12 @@ namespace Liv_In_Paris
                     int Noeud2 = value2; // Plus besoin de refaire un int.Parse
                     liens.Add(new Lien<T>(ListNoeud[Noeud1 - 1], ListNoeud[Noeud2 - 1], 1, int.Parse(grapheString[i][positionTempsEntreStation])));
                 }
+
+                if (int.TryParse(grapheString[i][positionStationPrec].ToString(), out int value_2))
+                {
+                    int Noeud2 = value_2; // Plus besoin de refaire un int.Parse
+                    liens.Add(new Lien<T>(ListNoeud[Noeud1 - 1], ListNoeud[Noeud2 - 1], 1, int.Parse(grapheString[i][positionTempsEntreStation])));
+                }
             }
 
             int Temps_de_Changement = 4;
