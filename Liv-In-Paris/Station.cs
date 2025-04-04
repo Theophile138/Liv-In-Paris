@@ -21,6 +21,8 @@ namespace Liv_In_Paris
 
         public string Ligne { get { return ligne; } }
 
+        public string Nom { get { return nom; } }
+
         public Station(string ligne, string nom, double longitude, double latitude, string Commune, int CommuneCode)
         {
             this.nom = nom;
