@@ -14,7 +14,7 @@ namespace Liv_In_Paris.Tests
         [TestMethod()]
         public void ReadFile_TabTxtTest()
         {
-            string[] myFile = Fichier.ReadFile_TabTxt("test_unit.txt");
+            string[] myFile = Fichier<object>.ReadFile_TabTxt("test_unit.txt");
 
             Assert.IsTrue(myFile[0] == "salut");
 
@@ -23,9 +23,9 @@ namespace Liv_In_Paris.Tests
         [TestMethod()]
         public void CleanStringTabTest()
         {
-            string[] myFile = Fichier.ReadFile_TabTxt("test_unit.txt");
+            string[] myFile = Fichier<object>.ReadFile_TabTxt("test_unit.txt");
 
-            string[][] file = Fichier.CleanStringTab(myFile);
+            string[][] file = Fichier<object>.CleanStringTab(myFile);
 
             if (file.Length != 2)
             {

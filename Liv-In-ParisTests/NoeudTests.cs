@@ -14,14 +14,14 @@ namespace Liv_In_Paris.Tests
         [TestMethod()]
         public void NoeudTest()
         {
-            Noeud noeud1 = new Noeud(1);
+            Noeud<int> noeud1 = new(1);
             Assert.IsTrue(noeud1 != null);
         }
 
         [TestMethod()]
         public void toStringTest()
         {
-            Noeud noeud1 = new Noeud(1);
+            Noeud<int> noeud1 = new(1);
             Assert.IsTrue("1" == noeud1.toString());
         }
     }
