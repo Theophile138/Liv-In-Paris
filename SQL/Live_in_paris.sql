@@ -1,19 +1,12 @@
 DROP DATABASE IF EXISTS restaurant;
+
 CREATE DATABASE IF NOT EXISTS restaurant;
 USE restaurant;
 
-CREATE TABLE IF NOT EXISTS Entreprise (
-    no_siret     BIGINT,
-    nom          VARCHAR(50) NOT NULL,
-    nom_referent VARCHAR(50),
-    email        VARCHAR(100),
-    code_postal  VARCHAR(50),
-    ville        VARCHAR(50),
-    PRIMARY KEY (no_siret)
-);
 
+DROP TABLE IF EXISTS Particulier;
 CREATE TABLE IF NOT EXISTS Particulier (
-    id_particulier        INT,
+    id_particulier        INT AUTO_INCREMENT PRIMARY KEY,
     tel                   VARCHAR(20),
     code_postal           VARCHAR(50),
     nom                   VARCHAR(60) NOT NULL,
@@ -22,142 +15,156 @@ CREATE TABLE IF NOT EXISTS Particulier (
     email                 VARCHAR(100) NOT NULL,
     numero                VARCHAR(50) NOT NULL,
     ville                 VARCHAR(50) NOT NULL,
-    metro_le_plus_proche  VARCHAR(50) NOT NULL,
-    PRIMARY KEY (id_particulier)
+    metro_le_plus_proche  VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Cuisinier (
-    id_cuisinier  INT,
-    mot_de_passe_ VARCHAR(75) NOT NULL,
-    id_particulier INT NOT NULL,
-    PRIMARY KEY (id_cuisinier),
-    UNIQUE (id_particulier),
-    FOREIGN KEY (id_particulier) REFERENCES Particulier(id_particulier) ON DELETE CASCADE
+
+DROP TABLE IF EXISTS Entreprise;
+CREATE TABLE IF NOT EXISTS Entreprise (
+    no_siret     BIGINT PRIMARY KEY,
+    nom          VARCHAR(50) NOT NULL,
+    nom_referent VARCHAR(50),
+    email        VARCHAR(100),
+    code_postal  VARCHAR(50),
+    ville        VARCHAR(50)
 );
 
-CREATE TABLE IF NOT EXISTS Plat (
-    id_plat              INT,
-    nombre_de_personnes_ BIGINT NOT NULL,
-    date_fabric         DATETIME NOT NULL,
-    date_peremption     DATETIME,
-    quantite            INT NOT NULL,
-    description         VARCHAR(300),
-    categorie          VARCHAR(50),
-    prix              DECIMAL(10,2) NOT NULL,
-    regime            VARCHAR(50),
-    nationalite_plat  VARCHAR(50),
-    nom               VARCHAR(50) NOT NULL,
-    nature            VARCHAR(50),
-    PRIMARY KEY (id_plat)
-);
 
-CREATE TABLE IF NOT EXISTS Ingredient (
-    nom        VARCHAR(100),
-    allergenes VARCHAR(50),
-    volume    VARCHAR(50) NOT NULL,
-    PRIMARY KEY (nom)
-);
-
+DROP TABLE IF EXISTS Client;
 CREATE TABLE IF NOT EXISTS Client (
-    id_client     INT,
+    id_client     INT PRIMARY KEY,
     mot_de_passe  VARCHAR(255) NOT NULL,
-    id_particulier INT NOT NULL,
+    id_particulier INT NOT NULL UNIQUE,
     no_siret      BIGINT NOT NULL,
-    PRIMARY KEY (id_client),
-    UNIQUE (id_particulier),
-    UNIQUE (no_siret),
     FOREIGN KEY (id_particulier) REFERENCES Particulier(id_particulier) ON DELETE CASCADE,
     FOREIGN KEY (no_siret) REFERENCES Entreprise(no_siret) ON DELETE CASCADE
 );
 
+
+DROP TABLE IF EXISTS Cuisinier;
+CREATE TABLE IF NOT EXISTS Cuisinier (
+    id_cuisinier    INT PRIMARY KEY,
+    mot_de_passe_   VARCHAR(75) NOT NULL,
+    id_particulier  INT NOT NULL UNIQUE,
+    FOREIGN KEY (id_particulier) REFERENCES Particulier(id_particulier) ON DELETE CASCADE
+);
+
+
+DROP TABLE IF EXISTS Plat;
+CREATE TABLE IF NOT EXISTS Plat (
+    id_plat              INT PRIMARY KEY,
+    nombre_de_personnes_ BIGINT NOT NULL,
+    date_fabric          DATETIME NOT NULL,
+    date_peremption      DATETIME,
+    quantite             INT NOT NULL,
+    description          VARCHAR(300),
+    categorie            VARCHAR(50),
+    prix                 DECIMAL(10,2) NOT NULL,
+    regime               VARCHAR(50),
+    nationalite_plat     VARCHAR(50),
+    nom                  VARCHAR(50) NOT NULL,
+    nature               VARCHAR(50),
+    id_cuisinier         INT,
+    FOREIGN KEY (id_cuisinier) REFERENCES Cuisinier(id_cuisinier) ON DELETE SET NULL
+);
+
+
+DROP TABLE IF EXISTS Ingredient;
+CREATE TABLE IF NOT EXISTS Ingredient (
+    nom        VARCHAR(100) PRIMARY KEY,
+    allergenes VARCHAR(50),
+    volume     VARCHAR(50) NOT NULL
+);
+
+
+DROP TABLE IF EXISTS Commande;
 CREATE TABLE IF NOT EXISTS Commande (
-    numero_commande        INT,
+    numero_commande         INT AUTO_INCREMENT PRIMARY KEY ,
     adresse_livraison_     VARCHAR(257) NOT NULL,
     prix_ht                DECIMAL(10,2) NOT NULL,
     date_commande          DATETIME NOT NULL,
     instructions_commande  VARCHAR(200),
     prix_livraison         DECIMAL(10,2),
-    prix_ttc              DECIMAL(10,2),
+    prix_ttc               DECIMAL(10,2),
+    statut                 VARCHAR(50) DEFAULT 'En attente',
     id_client              INT NOT NULL,
-    PRIMARY KEY (numero_commande), 
     FOREIGN KEY (id_client) REFERENCES Client(id_client) ON DELETE CASCADE
 );
 
 
-CREATE TABLE IF NOT EXISTS est_constitue_de_ (
+DROP TABLE IF EXISTS Commande_Plat;
+CREATE TABLE IF NOT EXISTS Commande_Plat (
     numero_commande INT,
-    id_plat        INT,
-    quantite       INT,
+    id_plat         INT,
+    quantite        INT DEFAULT 1,
     PRIMARY KEY (numero_commande, id_plat),
     FOREIGN KEY (numero_commande) REFERENCES Commande(numero_commande) ON DELETE CASCADE,
-    FOREIGN KEY (id_plat) REFERENCES Plat(id_plat)
+    FOREIGN KEY (id_plat) REFERENCES Plat(id_plat) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS est_compose_de_ (
-    id_plat INT,
-    nom     VARCHAR(100),
-    quantite INT,
-    PRIMARY KEY (id_plat, nom),
-    FOREIGN KEY (id_plat) REFERENCES Plat(id_plat),
-    FOREIGN KEY (nom) REFERENCES Ingredient(nom)
-);
-
-INSERT INTO Entreprise VALUES (12345678900011, 'La Bonne Boite', 'Jean Martin', 'contact@bonboite.fr', '75011', 'Paris');
 
 
-INSERT INTO Particulier VALUES 
-(1, 'Dupond', 'Marie', 'Rue de la République', '30', '75011','Mdupond@gmail.com', '1234567890', 'Paris' , 'République'),
-(2, 'Durand', 'Medhy', 'Rue Cardinet', '15', '75017', 'Mdurand@gmail.com', '1234567890', 'Paris', 'Cardinet');
+
+INSERT INTO Particulier (tel, code_postal, nom, rue, prenom, email, numero, ville, metro_le_plus_proche) VALUES
+('0600000001', '75001', 'Durand', 'Rue A', 'Alice', 'alice@ex.com', '12', 'Paris', 'Louvre'),
+('0600000002', '75002', 'Martin', 'Rue B', 'Bob', 'bob@ex.com', '34', 'Paris', 'Bourse'),
+('0600000003', '75003', 'Lemoine', 'Rue C', 'Chloé', 'chloe@ex.com', '56', 'Paris', 'Réaumur'),
+('0600000004', '75004', 'Petit', 'Rue D', 'David', 'david@ex.com', '78', 'Paris', 'Hôtel de Ville'),
+('0600000005', '75005', 'Roux', 'Rue E', 'Emma', 'emma@ex.com', '90', 'Paris', 'Place Monge');
 
 
-INSERT INTO Cuisinier VALUES (1, 'mdpCuisinier1', 1);
+INSERT INTO Entreprise (no_siret, nom, nom_referent, email, code_postal, ville) VALUES
+(12345678900011, 'La Bonne Bouffe', 'Chef Jean', 'contact@bonnebouffe.com', '75001', 'Paris'),
+(12345678900012, 'Saveurs du Monde', 'Sophie Gourmet', 'sophie@saveurs.com', '75002', 'Paris'),
+(12345678900013, 'Traditions Locales', 'Marc Cuisine', 'marc@local.fr', '75003', 'Paris');
+
+INSERT INTO Client (id_client, mot_de_passe, id_particulier, no_siret) VALUES
+(101, 'mdp123', 1, 12345678900011),
+(102, 'mdp456', 2, 12345678900012),
+(103, 'mdp789', 3, 12345678900013);
+
+INSERT INTO Cuisinier (id_cuisinier, mot_de_passe_, id_particulier) VALUES
+(201, 'cuisine456', 4),
+(202, 'cuisine789', 5);
 
 
-INSERT INTO Client VALUES (1, 'mdpClient1', 2, 12345678900011);
+INSERT INTO Plat (id_plat, nombre_de_personnes_, date_fabric, date_peremption, quantite, description, categorie, prix, regime, nationalite_plat, nom, nature, id_cuisinier) VALUES
+(301, 2, NOW(), DATE_ADD(NOW(), INTERVAL 3 DAY), 5, 'Délicieux curry végétarien', 'Plat principal', 14.99, 'Végétarien', 'Indienne', 'Curry Masala', 'Chaud', 201),
+(302, 4, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), 8, 'Poulet sauce soja', 'Plat principal', 16.50, 'Omnivore', 'Chinoise', 'Poulet Impérial', 'Chaud', 201),
+(303, 3, NOW(), DATE_ADD(NOW(), INTERVAL 5 DAY), 10, 'Tacos mexicains épicés', 'Snack', 12.00, 'Omnivore', 'Mexicaine', 'Tacos Locos', 'Chaud', 202),
+(304, 1, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), 6, 'Soupe miso légère', 'Entrée', 7.50, 'Vegan', 'Japonaise', 'Soupe Miso', 'Chaud', 202),
+(305, 2, NOW(), DATE_ADD(NOW(), INTERVAL 4 DAY), 9, 'Paëlla valencienne', 'Plat principal', 18.75, 'Pescetarien', 'Espagnole', 'Paëlla Royale', 'Chaud', 201),
+(306, 1, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), 5, 'Salade César', 'Entrée', 9.50, 'Omnivore', 'Américaine', 'Salade César', 'Froid', 202);
 
 
-INSERT INTO Commande VALUES 
-(1, '30 Rue de la République, 75011 Paris', 10.00, '2025-01-10', 'Aucune instruction', NULL, NULL, 1),
-(2, '30 Rue de la République, 75011 Paris', 5.00, '2025-01-10', 'Livrer le matin', NULL, NULL, 1);
+INSERT INTO Commande (numero_commande, adresse_livraison_, prix_ht, date_commande, instructions_commande, prix_livraison, prix_ttc, statut, id_client) VALUES
+(401, '12 Rue A, 75001 Paris', 14.99, NOW(), 'Sans oignon', 2.00, 20.99, 'En attente', 101),
+(402, '34 Rue B, 75002 Paris', 16.50, NOW(), 'Ajoutez des baguettes', 2.50, 24.30, 'Livrée', 102),
+(403, '56 Rue C, 75003 Paris', 12.00, NOW(), '', 1.50, 16.90, 'En cours', 103),
+(404, '78 Rue D, 75004 Paris', 18.75, NOW(), 'Allergie aux fruits à coque', 3.00, 26.70, 'En attente', 101);
 
-INSERT INTO Plat VALUES 
-(1, 6, '2025-01-10', '2025-01-15', 6, 'Plat', 'Plat principal', 10.00, '', 'Française', 'Raclette', 'Française'),
-(2, 6, '2025-01-10', '2025-01-15', 6, 'Dessert', 'Dessert', 5.00, 'Végétarien', 'Indifférent', 'Salade de fruit', 'Indifférent');
 
-INSERT INTO est_constitue_de_ VALUES (1, 1, 6), (2, 2, 6);
+INSERT INTO Commande_Plat (numero_commande, id_plat, quantite) VALUES
+(401, 301, 1),
+(402, 302, 2),
+(403, 303, 1),
+(404, 305, 1),
+(404, 304, 1);
 
-INSERT INTO Ingredient VALUES 
-('raclette fromage', '', '250g'),
-('pommes_de_terre', '', '200g'),
-('jambon', '', '200g'),
-('cornichon', '', '3p'),
-('fraise', '', '100g'),
-('kiwi', '', '100g'),
-('sucre', '', '10g');
 
-INSERT INTO est_compose_de_ VALUES 
-(1, 'raclette fromage', 250),
-(1, 'pommes_de_terre', 200),
-(1, 'jambon', 200),
-(1, 'cornichon', 3),
-(2, 'fraise', 100),
-(2, 'kiwi', 100),
-(2, 'sucre', 10);
+SELECT * FROM Client;
+SELECT * FROM Cuisinier;
+SELECT * FROM Plat;
+SELECT * FROM Commande;
 
--- Quelques requêtes simples sur votre base de données ainsi créée
+SELECT p.nom, cp.quantite FROM Plat p
+JOIN Commande_Plat cp ON p.id_plat = cp.id_plat
+WHERE cp.numero_commande = 404;
 
-UPDATE Particulier SET email = 'nouvel_email@gmail.com' WHERE id_particulier = 1;
+SELECT COUNT(*) AS total_commandes FROM Commande;
+SELECT AVG(prix_ttc) AS moyenne_prix_ttc FROM Commande;
+SELECT nationalite_plat, COUNT(*) AS total FROM Plat GROUP BY nationalite_plat;
 
-UPDATE Plat SET prix = prix + 2.00 WHERE id_plat = 1;
+ALTER TABLE Particulier ADD COLUMN plat_deja_commande VARCHAR(100);
 
--- SELECT * FROM Plat ORDER BY prix ASC;
-
-ALTER TABLE Particulier
-ADD plat_deja_commande VARCHAR(255) NOT NULL;
-
-UPDATE Particulier
-SET plat_deja_commande = 'Raclette'
-WHERE id_particulier = 1;
-
-SELECT id_particulier, nom, prenom, plat_deja_commande
-FROM Particulier;
+SELECT * FROM Commande_Plat LIMIT 10;
