@@ -1,5 +1,6 @@
 ﻿using Liv_In_Paris;
-using System.Diagnostics;
+using MySql.Data.MySqlClient;
+using SQL;
 using System.Runtime.InteropServices;
 
 namespace Liv_In_Paris
@@ -26,11 +27,12 @@ namespace Liv_In_Paris
             // Partie pour load un graphe simple
             //----------------------------------------------------------------------------------------------------------
 
-            test();
+            //test();
 
 
+            
 
-
+            Program.MenuPrincipal(conn);
 
 
             //----------------------------------------------------------------------------------------------------------
@@ -41,6 +43,7 @@ namespace Liv_In_Paris
 
 
         }
+
         /// <summary>
         /// fonction annexe au Main qui permet de faire l'affichge
         /// </summary>
@@ -149,53 +152,37 @@ namespace Liv_In_Paris
 
                         List<int> chemin = null;
 
-                        switch (choix)
-                        {
-
-                            case "1":
-                                Stopwatch stopwatch = new Stopwatch();
-                                stopwatch.Start();
-                                chemin = myGraphe.Djikstra(debut, fin);
-                                stopwatch.Stop();
-                                Console.WriteLine($"Temps écoulé pour djikstra : {stopwatch.ElapsedMilliseconds} ms");
-                                break;
-                            case "2":
-                                stopwatch = new Stopwatch();
-                                stopwatch.Start();
-                                chemin = Graphe<int>.BellmanFord(myGraphe.MatriceAdj(), debut, fin);
-                                stopwatch.Stop();
-                                Console.WriteLine($"Temps écoulé pour Bellman-Ford : {stopwatch.ElapsedMilliseconds} ms");
-                                break;
-                            case "3":
-                                stopwatch = new Stopwatch();
-                                stopwatch.Start();
-                                chemin = myGraphe.FloydWarshall(debut, fin);
-                                stopwatch.Stop();
-                                Console.WriteLine($"Temps écoulé pour FloydWarshall : {stopwatch.ElapsedMilliseconds} ms");
-                                break;
-                            default:
-                                Console.WriteLine("Choix invalide.");
-                                continue;
-                        }
-                        if (chemin.Count == 1 && debut != fin) { Console.WriteLine(int.MinValue); }
-                        else if (fin == debut) { Console.WriteLine("Noeud de depart egal au noeud d'arrivé"); }
-                        else
-                        {
-                            Console.WriteLine("Chemin le plus court : " + string.Join(" -> ", chemin));
-                        }
+                    switch (choix)
+                    {
+                        case "1":
+                            chemin =myGraphe.Djikstra(debut, fin);
+                            break;
+                        case "2":
+                            chemin = Graphe<int>.BellmanFord(myGraphe.MatriceAdj(), debut, fin);
+                            break;
+                        case "3":
+                            chemin = myGraphe.FloydWarshall(debut, fin);
+                            break;
+                        default:
+                            Console.WriteLine("Choix invalide.");
+                            continue;
                     }
+                    if (chemin.Count == 1 && debut != fin) { Console.WriteLine(int.MinValue); }
+                    else if (fin == debut) { Console.WriteLine("Noeud de depart egal au noeud d'arrivé"); }
                     else
                     {
-                        Console.WriteLine("Choix invalide.");
-                        continue;
+                        Console.WriteLine("Chemin le plus court : " + string.Join(" -> ", chemin));
                     }
+                    Application.Run(new InterFaceGraphique<Station>(myGraphe) { Width = 1800, Height = 1000 });
+
                 }
-
-
             }
+            
+               
+        }
 
-
-
+       
+    
 
 
             static void annexe(string[] args)
