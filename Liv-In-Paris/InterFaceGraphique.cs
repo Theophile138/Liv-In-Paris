@@ -1,16 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml.Linq;
-
-using System.Windows.Forms;
 using System.Drawing;
-using System.Runtime.CompilerServices;
-using System.Drawing.Printing;
-using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace Liv_In_Paris
 {
@@ -18,11 +9,11 @@ namespace Liv_In_Paris
     {
         private Graphe<T> graphe;
         private Dictionary<int, Point> positions = new Dictionary<int, Point>();
-
-        private int nodeRadius = 10;
+        private Dictionary<int, Color> nodeColors = new Dictionary<int, Color>(); // Dictionnaire pour les couleurs des nœuds
+        private int nodeRadius = 10; // Rayon des nœuds
 
         /// <summary>
-        /// Constructeur de la clase interface graphique, demande un graphe
+        /// Constructeur de la classe Interface Graphique, demande un graphe
         /// </summary>
         /// <param name="graphe">Graphe</param>
         public InterFaceGraphique(Graphe<T> graphe)
@@ -42,36 +33,57 @@ namespace Liv_In_Paris
                 nodeRadius = 30;
                 PositionNodesCircular();  // Positionner les nœuds sans chevauchement
             }
+
+            LoadNodeColors(); // Appel pour charger les couleurs des nœuds
             this.Paint += new PaintEventHandler(DrawGraph);
         }
 
-        private Noeud<T> FindStationByName(string name)
+        private void LoadNodeColors()
         {
-            foreach (var node in graphe.ListNoeud)
+            // Obtenez le tableau retourné par la méthode WelshPowell
+            int[,] tableauCouleurs = graphe.WelshPowell();
+
+            // Parcourir le tableau et associer chaque nœud à sa couleur
+            for (int i = 0; i < tableauCouleurs.GetLength(0); i++)
             {
-                if (node.Value is Station station && station.toString() == name)
-                {
-                    return node;
-                }
+                int nodeId = tableauCouleurs[i, 0];   // Le numéro du nœud
+                int couleurIndex = tableauCouleurs[i, 1];  // L'indice de la couleur
+
+                // Associer le numéro de nœud à une couleur en fonction de l'indice
+                Color couleur = GetColorFromIndex(couleurIndex);
+                nodeColors[nodeId] = couleur;
             }
-            return null;
+        }
+
+        // Fonction qui permet de convertir un indice de couleur en une couleur réelle
+        private Color GetColorFromIndex(int couleurIndex)
+        {
+            switch (couleurIndex)
+            {
+                case 0: return Color.Red;
+                case 1: return Color.Blue;
+                case 2: return Color.Green;
+                case 3: return Color.Yellow;
+                case 4: return Color.Orange;
+                case 5: return Color.Pink;
+                case 6: return Color.Purple;
+                default: return Color.Gray;
+            }
         }
 
         private void positionMetro()
         {
-            
             int nodeCount = graphe.ListNoeud.Length;
 
-            // Get min Longitude ; max Longitude ; min Latitude ; max Latitude
-
-            double minLong = double.MaxValue; 
+            // Variables pour déterminer les coordonnées minimales et maximales
+            double minLong = double.MaxValue;
             double maxLong = double.MinValue;
             double minLat = double.MaxValue;
             double maxLat = double.MinValue;
 
+            // Calcul des limites de la longitude et latitude
             for (int i = 0; i < nodeCount; i++)
             {
-
                 if (graphe.ListNoeud[i].Value is Station station) // Vérifier et caster
                 {
                     minLong = Math.Min(minLong, station.Longitude);
@@ -81,13 +93,13 @@ namespace Liv_In_Paris
                 }
             }
 
+            // Calcul des positions des nœuds sur la fenêtre
             for (int i = 0; i < nodeCount; i++)
             {
-                if (graphe.ListNoeud[i].Value is Station station) // Vérifier et caster
+                if (graphe.ListNoeud[i].Value is Station station)
                 {
-                    int x = (int)(this.ClientSize.Width * (station.Longitude - minLong) / (maxLong - minLong) + nodeRadius*2);
+                    int x = (int)(this.ClientSize.Width * (station.Longitude - minLong) / (maxLong - minLong) + nodeRadius * 2);
                     int y = (int)(this.ClientSize.Height * (station.Latitude - minLat) / (maxLat - minLat) - nodeRadius * 2);
-                    
                     int sym_y = this.ClientSize.Height - y; // Symétrie par rapport à l'axe des ordonnées
 
                     positions[graphe.ListNoeud[i].Numero] = new Point(x, sym_y);
@@ -95,9 +107,8 @@ namespace Liv_In_Paris
             }
         }
 
-
         /// <summary>
-        /// Cette fonction met et crée les coordonnées des points des sommets de façon circulaire
+        /// Fonction pour positionner les nœuds de manière circulaire
         /// </summary>
         private void PositionNodesCircular()
         {
@@ -117,128 +128,77 @@ namespace Liv_In_Paris
         }
 
         /// <summary>
-        /// Cette methode dessine les noeuds , les liens et le boucle si un lien pointe sur lui même
+        /// Méthode qui dessine les nœuds, les liens et gère les boucles
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void DrawGraph(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             Pen pen = new Pen(Color.Black, 2);
 
+            // Dessiner les boucles
             foreach (Lien<T> lien in graphe.ListLien)
             {
-                if (lien.Noeud1 == lien.Noeud2) 
+                if (lien.Noeud1 == lien.Noeud2)
                 {
                     DrawLoop(g, positions[lien.Noeud1.Numero]);
                 }
             }
 
-
-
+            // Dessiner les liens entre les nœuds
             foreach (Lien<T> lien in graphe.ListLien)
             {
                 Point p1 = positions[lien.Noeud1.Numero];
                 Point p2 = positions[lien.Noeud2.Numero];
-                //g.DrawLine(pen, p1, p2);
 
-                if (lien.Noeud1.Value is Station station)
-                {
-                    Pen penMetro; // Déclaration du stylo pour la couleur
-
-                        switch (station.Ligne)
-                        {
-                            case "1": penMetro = new Pen(Color.Yellow, 2); break;
-                            case "2": penMetro = new Pen(Color.Blue, 2); break;
-                            case "3": penMetro = new Pen(Color.Olive, 2); break;
-                            case "3bis": penMetro = new Pen(Color.LightGreen, 2); break;
-                            case "4": penMetro = new Pen(Color.Magenta, 2); break;
-                            case "5": penMetro = new Pen(Color.Orange, 2); break;
-                            case "6": penMetro = new Pen(Color.LightGreen, 2); break;
-                            case "7": penMetro = new Pen(Color.Pink, 2); break;
-                            case "7bis": penMetro = new Pen(Color.LightBlue, 2); break;
-                            case "8": penMetro = new Pen(Color.Purple, 2); break;
-                            case "9": penMetro = new Pen(Color.Gold, 2); break;
-                            case "10": penMetro = new Pen(Color.SaddleBrown, 2); break;
-                            case "11": penMetro = new Pen(Color.Brown, 2); break;
-                            case "12": penMetro = new Pen(Color.DarkGreen, 2); break;
-                            case "13": penMetro = new Pen(Color.SkyBlue, 2); break;
-                            case "14": penMetro = new Pen(Color.Indigo, 2); break;
-                            default: penMetro = new Pen(Color.Gray, 2); break; // Par défaut si ligne inconnue
-                        }
-                        g.DrawLine(penMetro, p1, p2);
-                   
-                  
-
-                }
-                else
-                {
-                    g.DrawLine(pen, p1, p2);
-                }
+                // Dessiner les liens
+                g.DrawLine(pen, p1, p2);
 
                 if (lien.Direction == 1)
                 {
-                    DrawArrow(g, p1, p2);
+                    DrawArrow(g, p1, p2); // Dessiner la flèche si la direction est spécifiée
                 }
             }
 
-
+            // Dessiner les nœuds
             foreach (var kvp in positions)
             {
                 int nodeId = kvp.Key;
                 Point pos = kvp.Value;
 
-                g.FillEllipse(Brushes.White, pos.X - nodeRadius / 2, pos.Y - nodeRadius / 2, nodeRadius, nodeRadius);
+                // Colorier les nœuds avec la couleur associée
+                Brush nodeBrush = new SolidBrush(nodeColors.ContainsKey(nodeId) ? nodeColors[nodeId] : Color.Gray);
+                g.FillEllipse(nodeBrush, pos.X - nodeRadius / 2, pos.Y - nodeRadius / 2, nodeRadius, nodeRadius);
 
-                Pen thickPen = new Pen(Color.Black, 3); // Épaisseur de 3 pixels
-
+                Pen thickPen = new Pen(Color.Black, 3); // Épaisseur du contour des nœuds
                 g.DrawEllipse(thickPen, pos.X - nodeRadius / 2, pos.Y - nodeRadius / 2, nodeRadius, nodeRadius);
 
-                Noeud<T> myNoeud = graphe.ListNoeud[0];
-
-                if (myNoeud.Value is not Station)
+                // Afficher le numéro du nœud
+                StringFormat format = new StringFormat
                 {
-                    //Afficher le numéro du nœud
-                    StringFormat format = new StringFormat();
-                    format.Alignment = StringAlignment.Center;
-                    format.LineAlignment = StringAlignment.Center;
-                    g.DrawString(nodeId.ToString(), new Font("Arial", 12, FontStyle.Bold), Brushes.Black, pos, format);
-
-                }
-
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+                g.DrawString(nodeId.ToString(), new Font("Arial", 12, FontStyle.Bold), Brushes.Black, pos, format);
             }
         }
 
         /// <summary>
-        /// fonctionne généré automatiquement mais non utilisé 
+        /// Méthode qui dessine les boucles (liens qui pointent vers eux-mêmes)
         /// </summary>
-        private void InitializeComponent()
-        {
-
-        }
-
-        /// <summary>
-        /// methode qui dessine les liens des points qui pointes vers eux même
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="nodePos"></param>
         private void DrawLoop(Graphics g, Point nodePos)
         {
-            int loopSize = 40; 
+            int loopSize = 40;
             Pen loopPen = new Pen(Color.Black, 2);
 
             Rectangle rect = new Rectangle(nodePos.X - loopSize / 2, nodePos.Y - loopSize - 10, loopSize, loopSize);
 
-            g.DrawArc(loopPen, rect, 0, 360); 
-
+            g.DrawArc(loopPen, rect, 0, 360); // Dessiner un arc pour la boucle
         }
+
         /// <summary>
-        /// methode qui dessine les liens entre sommets 
+        /// Méthode qui dessine une flèche entre deux points
         /// </summary>
-        /// <param name="g"></param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
         private void DrawArrow(Graphics g, Point start, Point end)
         {
             double angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
@@ -254,43 +214,15 @@ namespace Liv_In_Paris
                 (int)(end.Y - arrowSize * Math.Sin(angle + Math.PI / 6))
             );
 
-            if (graphe.ListNoeud[0].Value is Station station)
-            {
-                Pen penMetro; // Déclaration du stylo pour la couleur
+            g.DrawLine(Pens.Black, end, arrowP1);
+            g.DrawLine(Pens.Black, end, arrowP2);
+        }
 
-                switch (station.Ligne)
-                {
-                    case "1": penMetro = new Pen(Color.Yellow, 2); break;
-                    case "2": penMetro = new Pen(Color.Blue, 2); break;
-                    case "3": penMetro = new Pen(Color.Olive, 2); break;
-                    case "3bis": penMetro = new Pen(Color.LightGreen, 2); break;
-                    case "4": penMetro = new Pen(Color.Magenta, 2); break;
-                    case "5": penMetro = new Pen(Color.Orange, 2); break;
-                    case "6": penMetro = new Pen(Color.LightGreen, 2); break;
-                    case "7": penMetro = new Pen(Color.Pink, 2); break;
-                    case "7bis": penMetro = new Pen(Color.LightBlue, 2); break;
-                    case "8": penMetro = new Pen(Color.Purple, 2); break;
-                    case "9": penMetro = new Pen(Color.Gold, 2); break;
-                    case "10": penMetro = new Pen(Color.SaddleBrown, 2); break;
-                    case "11": penMetro = new Pen(Color.Brown, 2); break;
-                    case "12": penMetro = new Pen(Color.DarkGreen, 2); break;
-                    case "13": penMetro = new Pen(Color.SkyBlue, 2); break;
-                    case "14": penMetro = new Pen(Color.Indigo, 2); break;
-                    default: penMetro = new Pen(Color.Gray, 2); break; // Par défaut si ligne inconnue
-                }
-
-                g.DrawLine(penMetro, end, arrowP1);
-                g.DrawLine(penMetro, end, arrowP2);
-
-            }
-            else
-            {
-                g.DrawLine(Pens.Black, end, arrowP1);
-                g.DrawLine(Pens.Black, end, arrowP2);
-            }
+        /// <summary>
+        /// Fonction non utilisée mais générée automatiquement
+        /// </summary>
+        private void InitializeComponent()
+        {
         }
     }
 }
-
-
-

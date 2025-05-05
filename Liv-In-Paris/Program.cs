@@ -137,7 +137,12 @@ namespace Liv_In_Paris
                     if (choix.ToLower() == "a")
                     {
                         Console.WriteLine("Pour retourner a la console, fermer l'affichage du graphe !");
-
+                        int[,] tab = myGraphe.WelshPowell();
+                        
+                            for (int o = 0; o < tab.GetLength(0); o++) {
+                            Console.WriteLine(tab[o, 0] + "  " + tab[o, 1]);
+                            }
+                        
                         Application.Run(new InterFaceGraphique<Station>(myGraphe) { Width = 1800, Height = 1000 });
                     }
                         if (choix.ToLower() != "a")
