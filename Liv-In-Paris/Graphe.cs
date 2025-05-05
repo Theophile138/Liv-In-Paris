@@ -579,5 +579,143 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
             }
             return b;
         }
+
+        /// <summary>
+        /// Implémente l'algorithme de Welsh-Powell pour colorier les sommets du graphe.
+        /// Retourne un dictionnaire associant chaque numéro de noeud à une couleur (entier).
+        /// </summary>
+        public int[,] WelshPowell()
+        {
+            int n = GetNbrNoeud();
+            int[,] matAdj = MatriceAdj();
+            int[] couleurs = new int[n]; 
+            for (int i = 0; i < n; i++)
+            {
+                couleurs[i] = -1; 
+            }
+
+            List<(int noeud, int degre)> degres = new List<(int, int)>();
+            for (int i = 0; i < n; i++)
+            {
+                int degre = 0;
+                for (int j = 0; j < n; j++)
+                {
+                    if (matAdj[i, j] != 0) degre++;
+                }
+                degres.Add((i, degre));
+            }
+
+            degres.Sort((a, b) => b.degre.CompareTo(a.degre));
+
+            int couleurActuelle = 0;
+
+            while (true)
+            {
+                bool changement = false;
+
+                foreach (var (noeud, _) in degres)
+                {
+                    if (couleurs[noeud] != -1) continue; 
+
+                    bool peutColorier = true;
+                    for (int j = 0; j < n; j++)
+                    {
+                        if (matAdj[noeud, j] != 0 && couleurs[j] == couleurActuelle)
+                        {
+                            peutColorier = false;
+                            break;
+                        }
+                    }
+
+                    if (peutColorier)
+                    {
+                        couleurs[noeud] = couleurActuelle;
+                        changement = true;
+                    }
+                }
+
+                if (!changement)
+                {
+                    break; 
+                }
+
+                couleurActuelle++;
+            }
+            int[,] tableauretour = new int[couleurs.Length, 2];
+            for (int i = 0; i < couleurs.Length; i++) {
+                tableauretour[i, 1] = couleurs[i];
+                tableauretour[i, 0] = i;
+            
+            }
+            return tableauretour;
+        }
+
+        /// <summary>
+        /// identifie si un graphe est biparti (si le nombre de couleurs vaut 2)
+        /// </summary>
+        /// <returns></returns>
+        public bool biparti()
+        { bool b = false;
+            int maximum = 0;
+            int[,] tab = WelshPowell();
+            for (int i = 0; i < tab.GetLength(0); i++) {
+                if (tab[i, 1] > maximum) {
+                    maximum = tab[i, 1];
+                } 
+            }
+            maximum++;
+            if (maximum == 2) { b = true; }
+            return b;
+        }
+
+
+        /// <summary>
+        /// permet de verifier si un graphe et planaire (sans certitude car le nombre de couleur est infeieur est inferieur ou egale a 4, il n est pas forcement planaire, cependant un nomre de couleurs strictement supérieur a 4 permet d affirmer que le graphe n'est pas planaire
+        /// </summary>
+        /// <returns>boolean </returns>
+        public bool planaire()
+        {
+            bool b = true;
+            int maximum = 0;
+            int[,] tab = WelshPowell();
+            for (int i = 0; i < tab.GetLength(0); i++)
+            {
+                if (tab[i, 1] > maximum)
+                {
+                    maximum = tab[i, 1];
+                }
+            }
+            maximum++;
+            if (maximum > 4) { b = false; }
+            return b;
+        }
+
+        /// <summary>
+        /// identifie les groupes independants (aillant la meme couleur)
+        /// </summary>
+        /// <returns>un tableau des listes de personne dans chaque groupe indépendant</returns>
+        public Dictionary<int, List<int>> GroupesIndependants()
+        {
+            int[,] coloration = WelshPowell();  // [sommet, couleur]
+            Dictionary<int, List<int>> groupes = new Dictionary<int, List<int>>();
+
+            for (int i = 0; i < coloration.GetLength(0); i++)
+            {
+                int sommet = coloration[i, 0];
+                int couleur = coloration[i, 1];
+
+                if (!groupes.ContainsKey(couleur))
+                {
+                    groupes[couleur] = new List<int>();
+                }
+
+                groupes[couleur].Add(sommet);
+            }
+
+            return groupes;
+        }
+
+
+
     }
 }

@@ -126,9 +126,14 @@ namespace Liv_In_Paris
                 Station.setStationListeNoeud(myGraphe, "Noeud_Metro.csv");
                 while (true)
                 {
-                    Console.WriteLine("Choisissez un algorithme :\n1 - Dijkstra\n2 - Bellman-Ford\n3 - Floyd-Warshall\nA - Afficher graphe\nQ - Quitter");
+                    Console.WriteLine("Choisissez un algorithme :\n1 - Dijkstra\n2 - Bellman-Ford\n3 - Floyd-Warshall\nA - Afficher graphe\nW - Welsh-Powell\nQ - Quitter");
                     string choix = Console.ReadLine();
                     if (choix.ToLower() == "q") break;
+                    if (choix.ToLower() == "w")
+                    {
+
+
+                    }
                     if (choix.ToLower() == "a")
                     {
                         Console.WriteLine("Pour retourner a la console, fermer l'affichage du graphe !");
