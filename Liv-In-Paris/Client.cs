@@ -5,6 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Text.Json; 
+using System.Xml.Serialization; 
+
 
 namespace SQL
 {
@@ -393,6 +397,29 @@ namespace SQL
             Console.WriteLine("Client mis à jour !");
         }
 
+        public static void ExporterClientsEnJson(List<Client> clients, string cheminFichier)
+      {
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        string json = JsonSerializer.Serialize(clients, options);
+        File.WriteAllText(cheminFichier, json);
+        Console.WriteLine($"Export JSON terminé : {cheminFichier}");
+     }
+    
+        public static void ExporterClientsEnXml(List<Client> clients, string cheminFichier)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Client>));
+            using (TextWriter writer = new StreamWriter(cheminFichier))
+            {
+            serializer.Serialize(writer, clients);
+            }
+            Console.WriteLine($"Export XML terminé : {cheminFichier}");
+        }    
 
+
+
+
+
+
+        
     }
 }
