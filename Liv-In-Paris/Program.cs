@@ -284,48 +284,52 @@ namespace Liv_In_Paris
             }
         }
 
-        public static void MenuPrincipal(MySqlConnection conn)
-        {
-            while (true)
-            {
-                Console.Clear();
-                Console.WriteLine("╔════════════════════════════════════════════╗");
-                Console.WriteLine("║              MENU PRINCIPAL                ║");
-                Console.WriteLine("╠════════════════════════════════════════════╣");
-                Console.WriteLine("║ 1. Gestion des Clients                     ║");
-                Console.WriteLine("║ 2. Gestion des Cuisiniers                  ║");
-                Console.WriteLine("║ 3. Gestion des Commandes                   ║");
-                Console.WriteLine("║ 4. Statistiques Générales                  ║");
-                Console.WriteLine("║ 5. Explorateur de Goûts                    ║");
-                Console.WriteLine("║ 0. Quitter                                 ║");
-                Console.WriteLine("╚════════════════════════════════════════════╝");
-
-                int choix = Utilitaires.DemanderChoixMenu("Choix : ", 0, 5);
-                Console.Clear();
-
-                switch (choix)
+            public static void MenuPrincipal(MySqlConnection conn)
                 {
-                    case 1:
-                        MenuClients(conn);
-                        break;
-                    case 2:
-                        MenuCuisiniers(conn);
-                        break;
-                    case 3:
-                        MenuCommandes(conn);
-                        break;
-                    case 4:
-                        MenuStatistiques(conn);
-                        break;
-                    case 5:
-                        MenuExplorateur(conn);
-                        break;
-                    case 0:
-                        Console.WriteLine("Fermeture du programme...");
-                        return;
-                }
-            }
-        }
+                    while (true)
+                        {
+                                Console.Clear();
+                                 Console.WriteLine("╔════════════════════════════════════════════╗");
+                                 Console.WriteLine("║              MENU PRINCIPAL                ║");
+                                 Console.WriteLine("╠════════════════════════════════════════════╣");
+                                 Console.WriteLine("║ 1. Gestion des Clients                     ║");
+                                 Console.WriteLine("║ 2. Gestion des Cuisiniers                  ║");
+                                 Console.WriteLine("║ 3. Gestion des Commandes                   ║");
+                                 Console.WriteLine("║ 4. Statistiques Générales                  ║");
+                                 Console.WriteLine("║ 5. Explorateur de Goûts                    ║");
+                                 Console.WriteLine("║ 6. Exporter les données (JSON/XML)         ║");
+                                 Console.WriteLine("║ 0. Quitter                                 ║");
+                                 Console.WriteLine("╚════════════════════════════════════════════╝");
+
+                                int choix = Utilitaires.DemanderChoixMenu("Choix : ", 0, 6);
+                                Console.Clear();
+
+                                switch (choix)
+                                {
+                                    case 1:
+                                    MenuClients(conn);
+                                    break;
+                                    case 2:
+                                    MenuCuisiniers(conn);
+                                    break;
+                                    case 3:
+                                    MenuCommandes(conn);
+                                    break;
+                                    case 4:
+                                    MenuStatistiques(conn);
+                                    break;
+                                    case 5:
+                                    MenuExplorateur(conn);
+                                    break;
+                                    case 6:
+                                    ExporterToutesLesDonnees(conn);
+                                    break;
+                                    case 0:
+                                  Console.WriteLine("Fermeture du programme...");
+                                    return;
+                               }
+                         }
+                 }
 
         public static void MenuClients(MySqlConnection conn)
         {
@@ -530,8 +534,22 @@ namespace Liv_In_Paris
             Console.ReadKey();
         }
 
-    }
+                        
+        public static void ExporterToutesLesDonnees(MySqlConnection conn)
+        {
+            Console.WriteLine("\n--- Export des données en cours... ---\n");
 
+            var clients = Client.GetAllClients(conn);
+            Client.ExporterClientsEnJson(clients, "clients.json");
+            Client.ExporterClientsEnXml(clients, "clients.xml");
+
+            Console.WriteLine("\n Données exportées avec succès !");
+            Pause();
+         }
+
+     }
+
+    
 
 
 }
