@@ -162,9 +162,9 @@ namespace Liv_In_Paris
 
             int numberNoeud = int.Parse(grapheString[0][0]);
 
-            Noeud<T>[] ListNoeud = new Noeud<T>[numberNoeud];
+            Noeud<T>[] ListNoeud = new Noeud<T>[numberNoeud + 1 ];
 
-            for(int i = 0; i < ListNoeud.Length ; i++) 
+            for (int i = 0; i < ListNoeud.Length ; i++) 
             {
                 ListNoeud[i] = new Noeud<T>(i+1);
             }
@@ -201,7 +201,7 @@ namespace Liv_In_Paris
 
             //Fontion pour obtenir le nombre max de noeud
             int numberNoeud = 0;
-            for(int i = 0; i < grapheString.Length; i++)
+            for(int i = 0;  i < grapheString.Length; i++)
             {
                 if (int.Parse(grapheString[i][0]) > numberNoeud)
                 {
@@ -209,7 +209,7 @@ namespace Liv_In_Paris
                 }
             }
 
-            Noeud<T>[] ListNoeud = new Noeud<T>[numberNoeud];
+            Noeud<T>[] ListNoeud = new Noeud<T>[numberNoeud +1];
 
             for (int i = 0; i < ListNoeud.Length; i++)
             {
@@ -253,7 +253,7 @@ namespace Liv_In_Paris
                         int Noeud1 = int.Parse(grapheString[i][0]);
                         int Noeud2 = int.Parse(grapheString[j][0]);
 
-                        liens.Add(new Lien<T>(ListNoeud[Noeud1 - 1], ListNoeud[Noeud2 - 1], 0, int.Parse(grapheString[i][Temps_de_Changement])));
+                        liens.Add(new Lien<T>(ListNoeud[Noeud1-1], ListNoeud[Noeud2-1], 0, int.Parse(grapheString[i][Temps_de_Changement])));
                     }
 
                 }

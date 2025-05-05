@@ -28,7 +28,15 @@ namespace Liv_In_Paris
             this.direction = direction;
             this.poid = poid;
         }
+        public Noeud<T> GetNoeud1()
+        {
+            return noeud1;
+        }
 
+        public Noeud<T> GetNoeud2()
+        {
+            return noeud2;
+        }
 
         /// <summary>
         /// Retourne vrai si le lien contient les deux noeuds en paramètre

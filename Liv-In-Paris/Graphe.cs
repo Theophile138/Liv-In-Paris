@@ -295,6 +295,10 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
             this.ListLien = ListLien;
         }
 
+        public Graphe()
+        {
+        }
+
         /// <summary>
         /// Parcours en profondeur du graphe
         /// </summary>
@@ -689,6 +693,7 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
             if (maximum > 4) { b = false; }
             return b;
         }
+        
 
         /// <summary>
         /// identifie les groupes independants (aillant la meme couleur)
@@ -714,7 +719,8 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
 
             return groupes;
         }
-
+        
+       
 
 
     }
