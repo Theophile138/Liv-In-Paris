@@ -11,7 +11,7 @@ namespace SQL
     {
         public static MySqlConnection ObtenirConnexion()
         {
-            string connectionString = "server=localhost;user=root;password=root;database=restaurant;";
+            string connectionString = "server=localhost;user=root;password=18072005;database=restaurant;";
             var conn = new MySqlConnection(connectionString);
 
             try
