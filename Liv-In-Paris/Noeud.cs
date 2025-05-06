@@ -32,5 +32,10 @@ namespace Liv_In_Paris
         {
             return numero.ToString();
         }
+
+        internal int GetPoidsLien<T>(Noeud<T> myNoeud1, Noeud<T> myNoeud2)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

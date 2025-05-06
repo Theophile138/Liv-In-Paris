@@ -58,7 +58,20 @@ namespace Liv_In_Paris
 
             return result;
         }
-
+        /// <summary>
+        /// Retourne le poids de la liaison si les deux noeuds sont liés, sinon -1.
+        /// </summary>
+        /// <param name="noeud1_">Premier noeud</param>
+        /// <param name="noeud2_">Deuxième noeud</param>
+        /// <returns>Le poids de la liaison ou -1 si pas de liaison</returns>
+        public int GetPoidLien(Noeud<T> noeud1_, Noeud<T> noeud2_)
+        {
+            if (Contient(noeud1_, noeud2_))
+            {
+                return poid;
+            }
+            return -1; // ou tu peux lever une exception si ce cas ne doit pas se produire
+        }
 
         /// <summary>
         /// Retourne vrai si le lien est dans la bonne direction
@@ -87,4 +100,5 @@ namespace Liv_In_Paris
             return result;
         }
     }
+
 }

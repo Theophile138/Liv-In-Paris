@@ -21,6 +21,8 @@ namespace Liv_In_Paris
         {
 
             int[,] matAdj = new int[GetNbrNoeud(), GetNbrNoeud()];
+        
+
 
             // Remplissage de la matrice
             for (int i = 0; i < GetNbrNoeud(); i++)
@@ -30,10 +32,12 @@ namespace Liv_In_Paris
                 for(int j = 0; j <  GetNbrNoeud(); j++)
                 {
                     Noeud<T> myNoeud1 = FindNoeud(j+1);
+                    Lien<T> lien = GetLien(myNoeud1, myNoeud2); // <-- tu dois implémenter cette méthode dans ta classe graphe
 
                     if (LienExiste(myNoeud1,myNoeud2) == true)
                     {
-                        matAdj[i, j] = 1;
+                        
+                        matAdj[i, j] = lien.GetPoidLien(myNoeud1,myNoeud2);
                     }
                     else
                     {
@@ -45,6 +49,18 @@ namespace Liv_In_Paris
             return matAdj;
 
         }
+        public Lien<T> GetLien(Noeud<T> n1, Noeud<T> n2)
+        {
+            foreach (var lien in ListLien) 
+            {
+                if (lien.Contient(n1, n2))
+                {
+                    return lien;
+                }
+            }
+            return null;
+        }
+
         public int[,] AjouterLiensEntreNoeudsConsecutifs(int[,] matAdj)
         {
             int n = matAdj.GetLength(0);
@@ -53,7 +69,7 @@ namespace Liv_In_Paris
             for (int i = 0; i < n - 1; i++)
             {
                 nouvelleMatrice[i, i + 1] = 1;
-                nouvelleMatrice[i + 1, i] = 1; // graphe non orienté
+                nouvelleMatrice[i + 1, i] = 1;
             }
 
             return nouvelleMatrice;
@@ -347,6 +363,41 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
             }
         }
 
+
+
+        /// <summary>
+        /// Calcule la distance totale du chemin en utilisant la liste de sommets retournée par Dijkstra.
+        /// </summary>
+        /// <param name="chemin">Liste des indices de sommets du chemin</param>
+        /// <returns>Distance totale (somme des poids des arêtes)</returns>
+        public int CalculerDistanceChemin(List<int> chemin)
+        {
+            int distanceTotale = 0;
+
+            for (int i = 0; i < chemin.Count - 1; i++)
+            {
+                Noeud<T> noeud1 = FindNoeud(chemin[i]);
+                Noeud<T> noeud2 = FindNoeud(chemin[i + 1]);
+
+                // Trouver le lien entre noeud1 et noeud2
+                Lien<T> lien = ListLien.FirstOrDefault(l =>
+                    (l.Noeud1.Equals(noeud1) && l.Noeud2.Equals(noeud2) && (l.Direction == 0 || l.Direction == 1)) ||
+                    (l.Noeud1.Equals(noeud2) && l.Noeud2.Equals(noeud1) && (l.Direction == 0 || l.Direction == 2)));
+
+                if (lien != null)
+                {
+                    distanceTotale += lien.Poid;
+                }
+                else
+                {
+                    throw new Exception($"Aucun lien trouvé entre les nœuds {chemin[i]} et {chemin[i + 1]}.");
+                }
+            }
+
+            return distanceTotale;
+        }
+
+
         /// <summary>
         /// Retourne vrai si le graphe est connexe
         /// </summary>
@@ -607,9 +658,7 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
                 {
                     if (matAdj[i, j] == 1 && Math.Abs(i - j) > 1)
                     {
-                        // Cas de changement de ligne (indices non consécutifs)
-
-                        // Ajouter les voisins de i vers j
+                       
                         for (int k = 0; k < n; k++)
                         {
                             if (matAdj[i, k] == 1 && k != j)
@@ -619,7 +668,7 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
                             }
                         }
 
-                        // Ajouter les voisins de j vers i
+                       
                         for (int k = 0; k < n; k++)
                         {
                             if (matAdj[j, k] == 1 && k != i)
@@ -647,7 +696,6 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
             int n = GetNbrNoeud();
             int[,] matAdVModifj = MatriceAdj();
 
-            //int[,] matAdAVModifj = AjouterLiensEntreNoeudsConsecutifs(matAdVModifj);
 
             int[,] matAdj = ModifierPourChangementsDeLigne(matAdVModifj);
             
