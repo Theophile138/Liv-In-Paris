@@ -199,7 +199,6 @@ namespace Liv_In_Paris
 
             //int numberNoeud = int.Parse(grapheString[0][0]);
 
-            //Fontion pour obtenir le nombre max de noeud
             int numberNoeud = 0;
             for(int i = 0;  i < grapheString.Length; i++)
             {

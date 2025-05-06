@@ -45,6 +45,19 @@ namespace Liv_In_Paris
             return matAdj;
 
         }
+        public int[,] AjouterLiensEntreNoeudsConsecutifs(int[,] matAdj)
+        {
+            int n = matAdj.GetLength(0);
+            int[,] nouvelleMatrice = (int[,])matAdj.Clone();
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                nouvelleMatrice[i, i + 1] = 1;
+                nouvelleMatrice[i + 1, i] = 1; // graphe non orienté
+            }
+
+            return nouvelleMatrice;
+        }
 
         /// <summary>
         /// permet de calculer la distance entre deux points donnes 
@@ -583,6 +596,47 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
             }
             return b;
         }
+        public int[,] ModifierPourChangementsDeLigne(int[,] matAdj)
+        {
+            int n = matAdj.GetLength(0);
+            int[,] nouvelleMatrice = (int[,])matAdj.Clone();
+
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    if (matAdj[i, j] == 1 && Math.Abs(i - j) > 1)
+                    {
+                        // Cas de changement de ligne (indices non consécutifs)
+
+                        // Ajouter les voisins de i vers j
+                        for (int k = 0; k < n; k++)
+                        {
+                            if (matAdj[i, k] == 1 && k != j)
+                            {
+                                nouvelleMatrice[k, j] = 1;
+                                nouvelleMatrice[j, k] = 1;
+                            }
+                        }
+
+                        // Ajouter les voisins de j vers i
+                        for (int k = 0; k < n; k++)
+                        {
+                            if (matAdj[j, k] == 1 && k != i)
+                            {
+                                nouvelleMatrice[k, i] = 1;
+                                nouvelleMatrice[i, k] = 1;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return nouvelleMatrice;
+        }
+
+
+       
 
         /// <summary>
         /// Implémente l'algorithme de Welsh-Powell pour colorier les sommets du graphe.
@@ -591,7 +645,12 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
         public int[,] WelshPowell()
         {
             int n = GetNbrNoeud();
-            int[,] matAdj = MatriceAdj();
+            int[,] matAdVModifj = MatriceAdj();
+
+            //int[,] matAdAVModifj = AjouterLiensEntreNoeudsConsecutifs(matAdVModifj);
+
+            int[,] matAdj = ModifierPourChangementsDeLigne(matAdVModifj);
+            
             int[] couleurs = new int[n]; 
             for (int i = 0; i < n; i++)
             {
@@ -648,7 +707,7 @@ public List<int> ConstruireChemin(int[] predecesseur, int fin)
             int[,] tableauretour = new int[couleurs.Length, 2];
             for (int i = 0; i < couleurs.Length; i++) {
                 tableauretour[i, 1] = couleurs[i];
-                tableauretour[i, 0] = i;
+                tableauretour[i, 0] = i+1;
             
             }
             return tableauretour;

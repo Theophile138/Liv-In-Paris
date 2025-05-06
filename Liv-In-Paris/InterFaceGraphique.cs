@@ -9,20 +9,16 @@ namespace Liv_In_Paris
     {
         private Graphe<T> graphe;
         private Dictionary<int, Point> positions = new Dictionary<int, Point>();
-        private Dictionary<int, Color> nodeColors = new Dictionary<int, Color>(); // Dictionnaire pour les couleurs des nœuds
-        private int nodeRadius = 10; // Rayon des nœuds
+        private Dictionary<int, Color> nodeColors = new Dictionary<int, Color>();
+        private int nodeRadius = 8;
 
-        /// <summary>
-        /// Constructeur de la classe Interface Graphique, demande un graphe
-        /// </summary>
-        /// <param name="graphe">Graphe</param>
         public InterFaceGraphique(Graphe<T> graphe)
         {
             this.graphe = graphe;
             this.Width = 1800;
             this.Height = 1000;
             this.Text = "Visualisation du Graphe";
-            this.DoubleBuffered = true; // Réduit le scintillement
+            this.DoubleBuffered = true;
 
             if (typeof(T) == typeof(Station))
             {
@@ -30,32 +26,24 @@ namespace Liv_In_Paris
             }
             else
             {
-                nodeRadius = 30;
-                PositionNodesCircular();  // Positionner les nœuds sans chevauchement
+                PositionNodesCircular();
             }
 
-            LoadNodeColors(); // Appel pour charger les couleurs des nœuds
+            LoadNodeColors();
             this.Paint += new PaintEventHandler(DrawGraph);
         }
 
         private void LoadNodeColors()
         {
-            // Obtenez le tableau retourné par la méthode WelshPowell
             int[,] tableauCouleurs = graphe.WelshPowell();
-
-            // Parcourir le tableau et associer chaque nœud à sa couleur
             for (int i = 0; i < tableauCouleurs.GetLength(0); i++)
             {
-                int nodeId = tableauCouleurs[i, 0];   // Le numéro du nœud
-                int couleurIndex = tableauCouleurs[i, 1];  // L'indice de la couleur
-
-                // Associer le numéro de nœud à une couleur en fonction de l'indice
-                Color couleur = GetColorFromIndex(couleurIndex);
-                nodeColors[nodeId] = couleur;
+                int nodeId = tableauCouleurs[i, 0];
+                int couleurIndex = tableauCouleurs[i, 1];
+                nodeColors[nodeId] = GetColorFromIndex(couleurIndex);
             }
         }
 
-        // Fonction qui permet de convertir un indice de couleur en une couleur réelle
         private Color GetColorFromIndex(int couleurIndex)
         {
             switch (couleurIndex)
@@ -74,17 +62,12 @@ namespace Liv_In_Paris
         private void positionMetro()
         {
             int nodeCount = graphe.ListNoeud.Length;
+            double minLong = double.MaxValue, maxLong = double.MinValue;
+            double minLat = double.MaxValue, maxLat = double.MinValue;
 
-            // Variables pour déterminer les coordonnées minimales et maximales
-            double minLong = double.MaxValue;
-            double maxLong = double.MinValue;
-            double minLat = double.MaxValue;
-            double maxLat = double.MinValue;
-
-            // Calcul des limites de la longitude et latitude
             for (int i = 0; i < nodeCount; i++)
             {
-                if (graphe.ListNoeud[i].Value is Station station) // Vérifier et caster
+                if (graphe.ListNoeud[i].Value is Station station)
                 {
                     minLong = Math.Min(minLong, station.Longitude);
                     maxLong = Math.Max(maxLong, station.Longitude);
@@ -93,31 +76,27 @@ namespace Liv_In_Paris
                 }
             }
 
-            // Calcul des positions des nœuds sur la fenêtre
             for (int i = 0; i < nodeCount; i++)
             {
                 if (graphe.ListNoeud[i].Value is Station station)
                 {
                     int x = (int)(this.ClientSize.Width * (station.Longitude - minLong) / (maxLong - minLong) + nodeRadius * 2);
                     int y = (int)(this.ClientSize.Height * (station.Latitude - minLat) / (maxLat - minLat) - nodeRadius * 2);
-                    int sym_y = this.ClientSize.Height - y; // Symétrie par rapport à l'axe des ordonnées
+                    int sym_y = this.ClientSize.Height - y;
 
                     positions[graphe.ListNoeud[i].Numero] = new Point(x, sym_y);
                 }
             }
         }
 
-        /// <summary>
-        /// Fonction pour positionner les nœuds de manière circulaire
-        /// </summary>
         private void PositionNodesCircular()
         {
             int centerX = this.ClientSize.Width / 2;
             int centerY = this.ClientSize.Height / 2;
-            int radius = Math.Min(centerX, centerY) - 50; // Rayon du cercle
+            int radius = Math.Min(centerX, centerY) - 100;
 
             int nodeCount = graphe.ListNoeud.Length;
-            double angleStep = 2 * Math.PI / nodeCount; // Angle entre chaque nœud
+            double angleStep = 2 * Math.PI / nodeCount;
 
             for (int i = 0; i < nodeCount; i++)
             {
@@ -127,14 +106,11 @@ namespace Liv_In_Paris
             }
         }
 
-        /// <summary>
-        /// Méthode qui dessine les nœuds, les liens et gère les boucles
-        /// </summary>
         private void DrawGraph(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            Pen pen = new Pen(Color.Black, 2);
+            Pen edgePen = new Pen(Color.Black, 2);
 
             // Dessiner les boucles
             foreach (Lien<T> lien in graphe.ListLien)
@@ -145,18 +121,17 @@ namespace Liv_In_Paris
                 }
             }
 
-            // Dessiner les liens entre les nœuds
+            // Dessiner les liens
             foreach (Lien<T> lien in graphe.ListLien)
             {
                 Point p1 = positions[lien.Noeud1.Numero];
                 Point p2 = positions[lien.Noeud2.Numero];
 
-                // Dessiner les liens
-                g.DrawLine(pen, p1, p2);
+                g.DrawLine(edgePen, p1, p2);
 
                 if (lien.Direction == 1)
                 {
-                    DrawArrow(g, p1, p2); // Dessiner la flèche si la direction est spécifiée
+                    DrawArrow(g, p1, p2);
                 }
             }
 
@@ -166,39 +141,27 @@ namespace Liv_In_Paris
                 int nodeId = kvp.Key;
                 Point pos = kvp.Value;
 
-                // Colorier les nœuds avec la couleur associée
-                Brush nodeBrush = new SolidBrush(nodeColors.ContainsKey(nodeId) ? nodeColors[nodeId] : Color.Gray);
-                g.FillEllipse(nodeBrush, pos.X - nodeRadius / 2, pos.Y - nodeRadius / 2, nodeRadius, nodeRadius);
-
-                Pen thickPen = new Pen(Color.Black, 3); // Épaisseur du contour des nœuds
-                g.DrawEllipse(thickPen, pos.X - nodeRadius / 2, pos.Y - nodeRadius / 2, nodeRadius, nodeRadius);
-
-                // Afficher le numéro du nœud
-                StringFormat format = new StringFormat
+                Color fillColor = nodeColors.ContainsKey(nodeId) ? nodeColors[nodeId] : Color.Gray;
+                using (Brush b = new SolidBrush(fillColor))
                 {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-                g.DrawString(nodeId.ToString(), new Font("Arial", 12, FontStyle.Bold), Brushes.Black, pos, format);
+                    g.FillEllipse(b, pos.X - nodeRadius, pos.Y - nodeRadius, nodeRadius * 2, nodeRadius * 2);
+                }
+
+                using (Pen borderPen = new Pen(Color.Black, 4))
+                {
+                    g.DrawEllipse(borderPen, pos.X - nodeRadius, pos.Y - nodeRadius, nodeRadius * 2, nodeRadius * 2);
+                }
             }
         }
 
-        /// <summary>
-        /// Méthode qui dessine les boucles (liens qui pointent vers eux-mêmes)
-        /// </summary>
         private void DrawLoop(Graphics g, Point nodePos)
         {
             int loopSize = 40;
             Pen loopPen = new Pen(Color.Black, 2);
-
             Rectangle rect = new Rectangle(nodePos.X - loopSize / 2, nodePos.Y - loopSize - 10, loopSize, loopSize);
-
-            g.DrawArc(loopPen, rect, 0, 360); // Dessiner un arc pour la boucle
+            g.DrawArc(loopPen, rect, 0, 360);
         }
 
-        /// <summary>
-        /// Méthode qui dessine une flèche entre deux points
-        /// </summary>
         private void DrawArrow(Graphics g, Point start, Point end)
         {
             double angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
@@ -218,11 +181,6 @@ namespace Liv_In_Paris
             g.DrawLine(Pens.Black, end, arrowP2);
         }
 
-        /// <summary>
-        /// Fonction non utilisée mais générée automatiquement
-        /// </summary>
-        private void InitializeComponent()
-        {
-        }
+        private void InitializeComponent() { }
     }
 }
